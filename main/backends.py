@@ -11,26 +11,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
     authentication_header_prefix = 'Bearer'
 
     def authenticate(self, request):
-        """
-        The `authenticate` method is called on every request regardless of
-        whether the endpoint requires authentication.
 
-        `authenticate` has two possible return values:
-
-        1) `None` - We return `None` if we do not wish to authenticate. Usually
-                    this means we know authentication will fail. An example of
-                    this is when the request does not include a token in the
-                    headers.
-
-        2) `(user, token)` - We return a user/token combination when
-                             authentication is successful.
-
-                            If neither case is met, that means there's an error
-                            and we do not return anything.
-                            We simple raise the `AuthenticationFailed`
-                            exception and let Django REST Framework
-                            handle the rest.
-        """
         request.user = None
 
         # `auth_header` should be an array with two elements: 1) the name of
@@ -76,7 +57,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
         successful, return the user and token. If not, throw an error.
         """
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY)
+            payload = jwt.decode(jwt=token, key=settings.SECRET_KEY, algorithms=['HS256'])
         except:
             msg = 'Invalid authentication. Could not decode token.'
             raise exceptions.AuthenticationFailed(msg)
@@ -87,8 +68,8 @@ class JWTAuthentication(authentication.BaseAuthentication):
             msg = 'No user matching this token was found.'
             raise exceptions.AuthenticationFailed(msg)
 
-        if not user.is_active:
+        if not user.is_staff:
             msg = 'This user has been deactivated.'
             raise exceptions.AuthenticationFailed(msg)
 
-        return (user, token)
+        return user, token

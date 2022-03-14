@@ -6,7 +6,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 from django import forms
 
-from main.models import Answer, User
+from main.models import Answer, User, Image
 
 
 @admin.register(Answer)
@@ -16,14 +16,15 @@ class Answer(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         if obj:  # when editing an object
             return ['InspectorName',
-                    'ansver',
+                    'answer',
                     'comment',
                     'date_of_creation',
                     'questionid',
                     'questioncode',
                     'categoryid',
                     'origin',
-                    'categorynewid'
+                    'categorynewid',
+                    'GalleryInline'
                     ]
         return self.readonly_fields
 
@@ -31,7 +32,10 @@ class Answer(admin.ModelAdmin):
         return False
 
 
-admin.site.register(User)
+class GalleryInline(admin.TabularInline):
+    fk_name = 'answer'
+    model = Image
+
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -65,7 +69,11 @@ class UserChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
-    password = ReadOnlyPasswordHashField()
+
+    password = ReadOnlyPasswordHashField(label=("Password"),
+                                         help_text=("Raw passwords are not stored, so there is no way to see "
+                                                    "this user's password, but you can change the password "
+                                                    "using <a href=\"../password/\">this form</a>."))
 
     class Meta:
         model = User
@@ -78,6 +86,9 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
+
+
+
 class MyUserAdmin(UserAdmin):
     # The forms to add and change user instances
     form = UserChangeForm
@@ -86,12 +97,12 @@ class MyUserAdmin(UserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'username', 'is_staff')
+    list_display = ('email', 'name', 'lastname', 'username', 'is_staff', 'is_active')
     list_filter = ('is_staff',)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('username',)}),
-        ('Permissions', {'fields': ('is_staff',)}),
+        (None, {'fields': ('email', 'username', 'password')}),
+        ('Personal info', {'fields': ('name', 'lastname')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -101,13 +112,11 @@ class MyUserAdmin(UserAdmin):
             'fields': ('email', 'username', 'password1', 'password2')}
         ),
     )
-    search_fields = ('email',)
+    search_fields = ('email', 'username', 'name', 'lastname')
     ordering = ('email',)
     filter_horizontal = ()
 
-admin.site.unregister(User)
-# Now register the new UserAdmin...
+
 admin.site.register(User, MyUserAdmin)
-# ... and, since we're not using Django's built-in permissions,
-# unregister the Group model from admin.
+
 admin.site.unregister(Group)

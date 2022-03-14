@@ -16,11 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 
-from main.views import RegistrationAPIView, LoginAPIView
+from main.views import LoginAPIView
 
 urlpatterns = [
     path('admin', admin.site.urls),
     path('', include('main.urls')),
-    re_path(r'^registration/?$', RegistrationAPIView.as_view(), name='user_registration'),
-    re_path(r'^login/?$', LoginAPIView.as_view(), name='user_login'),
+    # re_path(r'^registration/?$', RegistrationAPIView.as_view(), name='user_registration'),
 ]

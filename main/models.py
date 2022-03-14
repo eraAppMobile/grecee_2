@@ -7,6 +7,7 @@ from django.contrib.auth.models import PermissionsMixin, User
 from django.core import validators
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
 
 
 class Viq(models.Model):
@@ -31,6 +32,8 @@ class Viq(models.Model):
     class Meta:
         managed = False
         db_table = 'VIQ'
+
+
 
 class Questionpoolnew(models.Model):
     questionid = models.TextField(db_column='questionid', blank=True, primary_key=True)
@@ -72,28 +75,33 @@ class Viqinfo(models.Model):
         db_table = 'VIQinfo'
 
 class Answer(models.Model):
-    InspectorName =  models.TextField(blank=True, null=True)
-    ansver = models.IntegerField(blank=True, null=True)
+    InspectorName = models.TextField(blank=True, null=True)
+    answer = models.IntegerField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
     date_of_creation = models.DateTimeField( auto_now_add=False, default=datetime.today, blank=True, null=True)
     questionid = models.TextField(blank=True, null=True)
     questioncode = models.TextField(blank=True, null=True)
     categoryid = models.IntegerField(blank=True, null=True)
     origin = models.TextField(blank=True, null=True)
-    categorynewid =models.TextField(blank=True, null=True)
+    categorynewid = models.TextField(blank=True, null=True)
+    vessel = models.CharField(max_length=255, blank=True, null=True)
+    port = models.CharField(max_length=255, blank=True, null=True)
+    InspectionTypes = models.TextField(blank=True, null=True)
+    InspectionSource = models.TextField(blank=True, null=True)
+    date_in_vessel = models.TextField(blank=True, null=True)
+
+
+def user_directory_path(instance):
+    # путь, куда будет осуществлена загрузка MEDIA_ROOT/user_username
+    return 'user_{0}/'.format(instance.user.username)
+
+
+class Image(models.Model):
+    image = models.ImageField(upload_to=user_directory_path)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='images')
 
 
 class UserManager(BaseUserManager):
-    """
-    Django требует, чтобы пользовательские `User`
-    определяли свой собственный класс Manager.
-    Унаследовав от BaseUserManager, мы получаем много кода,
-    используемого Django для создания `User`.
-
-    Все, что нам нужно сделать, это переопределить функцию
-    `create_user`, которую мы будем использовать
-    для создания объектов `User`.
-    """
 
     def _create_user(self, username, email, password=None, **extra_fields):
         if not username:
@@ -143,7 +151,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
 
     username = models.CharField(db_index=True, max_length=255, unique=True)
-
+    name = models.CharField(max_length=255, blank=True, null=True)
+    lastname = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(
         validators=[validators.validate_email],
         unique=True,
@@ -191,7 +200,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         token = jwt.encode({
             'id': self.pk,
-            'exp': int(dt.strftime('%s'))
+            'exp': int(dt.strftime('%S'))
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token

@@ -3,8 +3,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Viq, Viqinfo, Questionpoolnew, Answer
-from .serializers import AnswerMVPSerializer, RegistrationSerializer, LoginSerializer
+from .models import Viq, Viqinfo, Questionpoolnew, Answer, Image
+from .serializers import AnswerMVPSerializer, LoginSerializer
 
 
 class Question(APIView):
@@ -43,50 +43,60 @@ class Answers (APIView):
 
         Answer.objects.create(
             InspectorName=data.get("answer")['InspectorName'],
-            ansver=data.get("answer")['ansver'],
+            answer=data.get("answer")['ansver'],
             comment=data.get("answer")['InspectorName'],
             questionid=data.get("answer")['comment'],
             questioncode=data.get("answer")['questioncode'],
             categoryid=data.get("answer")['categoryid'],
             categorynewid=data.get("answer")['categorynewid'],
-            origin=data.get("answer")['origin']
+            origin=data.get("answer")['origin'],
+            vessel=data.get("vessel")['vessel'],
+            port=data.get("port")['port'],
+            InspectionTypes=data.get("InspectionTypes")['InspectionTypes'],
+            InspectionSource=data.get("InspectionSource")['InspectionSource'],
+            date_in_vessel=data.get("date_in_vessel")['date_in_vessel'],
+        )
+        Image.objects.create(
+
         )
 
-        return Response({'status': 'Succes!'})  # возвращаем успешний ответ
+        return Response({'status': 'Succes!'})  # возвращаем успешный ответ
 
 
 class AnswerMVP (APIView):
     def get(self, request):
         listing = Answer.objects.all()
         result = AnswerMVPSerializer(listing, many=True)  # конвертируем их в json
+        if not listing:
+            return Response({'status': 'no data!'})
         return Response(result.data)  # возвращаем список примером документов
 
 
 
 
-class RegistrationAPIView(APIView):
-    """
-    Registers a new user.
-    """
-    permission_classes = [AllowAny]
-    serializer_class = RegistrationSerializer
-
-    def post(self, request):
-        """
-        Creates a new User object.
-        Username, email, and password are required.
-        Returns a JSON web token.
-        """
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(
-            {
-                'token': serializer.data.get('token', None),
-            },
-            status=status.HTTP_201_CREATED,
-        )
+# class RegistrationAPIView(APIView):
+#     """
+#     Registers a new user.
+#     """
+#     permission_classes = [AllowAny]
+#     serializer_class = RegistrationSerializer
+#
+#     def post(self, request):
+#         """
+#         Creates a new User object.
+#         Username, email, and password are required.
+#         Returns a JSON web token.
+#         """
+#         serializer = self.serializer_class(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#
+#         return Response(
+#             {
+#                 'token': serializer.data.get('token', None),
+#             },
+#             status=status.HTTP_201_CREATED,
+#         )
 
 
 class LoginAPIView(APIView):

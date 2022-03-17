@@ -74,6 +74,8 @@ class Viqinfo(models.Model):
         managed = False
         db_table = 'VIQinfo'
 
+
+    # переработать вопросы ( создать портфель вопросов, может включать разное кол-во ответов)
 class Answer(models.Model):
     InspectorName = models.TextField(blank=True, null=True)
     answer = models.IntegerField(blank=True, null=True)
@@ -93,6 +95,8 @@ class Answer(models.Model):
 
 def user_directory_path(instance):
     # путь, куда будет осуществлена загрузка MEDIA_ROOT/user_username
+    # вопрос по медия рут ( читал про отдельный домен что бы избежать уязвимостей xss)-спросить у Димы
+    # папки не создаются -разобраться!!!
     return 'user_{0}/'.format(instance.user.username)
 
 
@@ -171,6 +175,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Сообщает Django, что класс UserManager, определенный выше,
     # должен управлять объектами этого типа.
     objects = UserManager()
+
+
 
     def __str__(self):
         """

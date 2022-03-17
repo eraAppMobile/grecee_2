@@ -2,6 +2,10 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from PIL import Image as Img
+import io
+import base64
+
 
 from .models import Viq, Viqinfo, Questionpoolnew, Answer, Image
 from .serializers import AnswerMVPSerializer, LoginSerializer
@@ -35,32 +39,38 @@ class Question(APIView):
 
 
 class Answers (APIView):
-
+    # переработать вопросы ( создать портфель вопросов, может включать разное кол-во ответов)
     def post(self, request):
         data = request.data
         # try:
         #     if Answer.objects.filter():
 
-        Answer.objects.create(
+        new_answer = Answer.objects.create(
             InspectorName=data.get("answer")['InspectorName'],
-            answer=data.get("answer")['ansver'],
-            comment=data.get("answer")['InspectorName'],
-            questionid=data.get("answer")['comment'],
+            answer=data.get("answer")['answer'],
+            comment=data.get("answer")['comment'],
+            questionid=data.get("answer")['questionid'],
             questioncode=data.get("answer")['questioncode'],
             categoryid=data.get("answer")['categoryid'],
             categorynewid=data.get("answer")['categorynewid'],
             origin=data.get("answer")['origin'],
-            vessel=data.get("vessel")['vessel'],
-            port=data.get("port")['port'],
-            InspectionTypes=data.get("InspectionTypes")['InspectionTypes'],
-            InspectionSource=data.get("InspectionSource")['InspectionSource'],
-            date_in_vessel=data.get("date_in_vessel")['date_in_vessel'],
+            vessel=data.get("answer")['vessel'],
+            port=data.get("answer")['port'],
+            InspectionTypes=data.get("answer")['InspectionTypes'],
+            InspectionSource=data.get("answer")['InspectionSource'],
+            date_in_vessel=data.get("answer")['date_in_vessel'],
         )
-        Image.objects.create(
+        # написать цикл если изображений будет приходить несколько
+        if data['data_image']:
+            image_answer = base64.b64decode(data['data_image'])
+            image = Img.open(io.BytesIO(image_answer)).save('image.png')
 
-        )
+            Image.objects.create(
+                answer=new_answer,
+                image=image
+            )
 
-        return Response({'status': 'Succes!'})  # возвращаем успешный ответ
+        return Response({'status': 'Success!'})  # возвращаем успешный ответ
 
 
 class AnswerMVP (APIView):

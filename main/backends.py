@@ -14,9 +14,9 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
         request.user = None
 
-        # `auth_header` should be an array with two elements: 1) the name of
-        # the authentication header (in this case, "Token") and 2) the JWT
-        # that we should authenticate against.
+        # `auth_header` должен быть массивом из двух элементов: 1) имя
+        # заголовок аутентификации (в данном случае «Token») и 2) JWT
+        # что мы должны аутентифицировать
         auth_header = authentication.get_authorization_header(request).split()
         auth_header_prefix = self.authentication_header_prefix.lower()
 
@@ -24,31 +24,31 @@ class JWTAuthentication(authentication.BaseAuthentication):
             return None
 
         if len(auth_header) == 1:
-            # Invalid token header. No credentials provided. Do not attempt to
-            # authenticate.
+            # Недопустимый заголовок токена. Учетные данные не предоставлены. Не пытайтесь
+            # аутентифицировать
             return None
 
         elif len(auth_header) > 2:
-            # Invalid token header. The Token string should not contain spaces.
-            # Do not attempt to authenticate.
+            # Недопустимый заголовок токена. Строка токена не должна содержать пробелов.
+            # Не пытайтесь аутентифицироваться.
             return None
 
-        # The JWT library we're using can't handle the `byte` type, which is
-        # commonly used by standard libraries in Python 3. To get around this,
-        # we simply have to decode `prefix` and `token`. This does not make for
-        # clean code, but it is a good decision because we would get an error
-        # if we didn't decode these values.
+        # Используемая нами библиотека JWT не может обрабатывать тип `byte`, т.е.
+        # обычно используется стандартными библиотеками в Python 3. Чтобы обойти это,
+        # нам просто нужно расшифровать `prefix` и `token`. Это не делает для
+        # чистым код, но это хорошее решение, потому что мы получим ошибку
+        # если мы не расшифровали эти значения.
         prefix = auth_header[0].decode('utf-8')
         token = auth_header[1].decode('utf-8')
 
         if prefix.lower() != auth_header_prefix:
-            # The auth header prefix is not what we expected. Do not attempt to
-            # authenticate.
+            # Префикс заголовка auth не соответствует нашим ожиданиям. Не пытайтесь
+            # аутентифицировать.
             return None
 
-        # By now, we are sure there is a *chance* that authentication will
-        # succeed. We delegate the actual credentials authentication to the
-        # method below.
+        # К настоящему времени мы уверены, что есть *шанс*, что аутентификация будет
+        # преуспеть. Мы делегируем фактическую аутентификацию учетных данных
+        # метод ниже
         return self._authenticate_credentials(request, token)
 
     def _authenticate_credentials(self, request, token):

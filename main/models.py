@@ -8,6 +8,7 @@ from django.core import validators
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
 
 
 class Viq(models.Model):
@@ -97,16 +98,19 @@ def user_directory_path(instance):
     # путь, куда будет осуществлена загрузка MEDIA_ROOT/user_username
     # вопрос по медия рут ( читал про отдельный домен что бы избежать уязвимостей xss)-спросить у Димы
     # папка не создаются -разобраться!!!
-    return 'user_{0}/'.format(instance.user.username)
+    # может нужно просто создавать папку когда создается новый пользователь в модели? os.mkdir? или в модели ответа?
+    return 'user_{0}'.format(instance.user.username)
 
 
 class Image(models.Model):
     image = models.ImageField(upload_to=user_directory_path)
+
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='images')
     # не отображает миниатюры в админке!
+    # не заходит в функцию в дебагере ?
+    # возможно это из-за неправильного сохранения фото?
     def image_img(self):
         if self.image:
-            from django.utils.safestring import mark_safe
             return mark_safe(u'<a href="{0}" target="_blank"><img src="{0}" width="100"/></a>'.format(self.image.url))
         else:
             return '(no Photography)'

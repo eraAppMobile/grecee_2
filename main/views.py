@@ -7,7 +7,7 @@ import io
 import base64
 
 
-from .models import Viq, Viqinfo, Questionpoolnew, Answer, Image
+from .models import Viq, Viqinfo, Questionpoolnew, Answer, Image, User, user_directory_path
 from .serializers import AnswerMVPSerializer, LoginSerializer
 
 
@@ -63,11 +63,15 @@ class Answers (APIView):
         # написать цикл если изображений будет приходить несколько
         if data['data_image']:
             image_answer = base64.b64decode(data['data_image'])
-            image = Img.open(io.BytesIO(image_answer)).save('image.png')
-
+            # сохраняет не в медия а так в каталог
+            # но метод не правильный, как я думаю
+            # имя файла?
+            # image = Img.open(io.BytesIO(image_answer)).save('image1.png',)
+            name = data.get("answer")['InspectorName']
             Image.objects.create(
                 answer=new_answer,
-                image=image
+
+                image=Img.open(io.BytesIO(image_answer)).save(name + '.png')
             )
 
         return Response({'status': 'Success!'})  # возвращаем успешный ответ

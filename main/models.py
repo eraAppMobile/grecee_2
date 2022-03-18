@@ -96,13 +96,23 @@ class Answer(models.Model):
 def user_directory_path(instance):
     # путь, куда будет осуществлена загрузка MEDIA_ROOT/user_username
     # вопрос по медия рут ( читал про отдельный домен что бы избежать уязвимостей xss)-спросить у Димы
-    # папки не создаются -разобраться!!!
+    # папка не создаются -разобраться!!!
     return 'user_{0}/'.format(instance.user.username)
 
 
 class Image(models.Model):
     image = models.ImageField(upload_to=user_directory_path)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='images')
+    # не отображает миниатюры в админке!
+    def image_img(self):
+        if self.image:
+            from django.utils.safestring import mark_safe
+            return mark_safe(u'<a href="{0}" target="_blank"><img src="{0}" width="100"/></a>'.format(self.image.url))
+        else:
+            return '(no Photography)'
+
+    image_img.short_description = 'Photography'
+    image_img.allow_tags = True
 
 
 class UserManager(BaseUserManager):

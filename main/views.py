@@ -1,3 +1,4 @@
+from django.core.files.base import ContentFile
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -7,7 +8,7 @@ import io
 import base64
 
 
-from .models import Viq, Viqinfo, Questionpoolnew, Answer, Image, User, user_directory_path
+from .models import Viq, Viqinfo, Questionpoolnew, Answer, Image
 from .serializers import AnswerMVPSerializer, LoginSerializer
 
 
@@ -62,18 +63,23 @@ class Answers (APIView):
         )
         # написать цикл если изображений будет приходить несколько
         if data['data_image']:
+
+
             image_answer = base64.b64decode(data['data_image'])
             # сохраняет не в медия а так в каталог
             # но метод не правильный, как я думаю
             # имя файла?
             # image = Img.open(io.BytesIO(image_answer)).save('image1.png',)
             name = data.get("answer")['InspectorName']
+            # image = Img.open(io.BytesIO(image_answer)).save(name + '.png')
+            image = Img.open(io.BytesIO(image_answer))
+            image_io = io.BytesIO()
+            image.save(image_io, format='png', name=name, quality=80)
+            image_bd = ContentFile(image_io.getvalue(), name=name)
             Image.objects.create(
                 answer=new_answer,
-
-                image=Img.open(io.BytesIO(image_answer)).save(name + '.png')
+                image=image_bd,
             )
-
         return Response({'status': 'Success!'})  # возвращаем успешный ответ
 
 

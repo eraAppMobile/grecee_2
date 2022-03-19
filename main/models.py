@@ -1,5 +1,5 @@
 
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
 import jwt as jwt
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
@@ -12,23 +12,23 @@ from django.utils.safestring import mark_safe
 
 
 class Viq(models.Model):
-    qid = models.IntegerField(db_column='QId', blank=True, null=True)  # Field name made lowercase.
-    objecttype = models.IntegerField(db_column='ObjectType', blank=True, null=True)  # Field name made lowercase.
-    categoryid = models.IntegerField(db_column='CategoryId', blank=True, null=True)  # Field name made lowercase.
-    questionid = models.TextField(db_column='QuestionId', blank=True, null=True)  # Field name made lowercase.
-    commentid = models.TextField(db_column='CommentId', blank=True, null=True)  # Field name made lowercase.
-    parentid = models.TextField(db_column='ParentId', blank=True, null=True)  # Field name made lowercase.
-    parenttype = models.TextField(db_column='ParentType', blank=True, null=True)  # Field name made lowercase.
-    displayindex = models.IntegerField(db_column='DisplayIndex', blank=True, null=True)  # Field name made lowercase.
-    displaylevel = models.IntegerField(db_column='DisplayLevel', blank=True, null=True)  # Field name made lowercase.
-    objectid = models.TextField(db_column='ObjectId', blank=True, null=True)  # Field name made lowercase.
-    parentcategory = models.TextField(db_column='ParentCategory', blank=True, null=True)  # Field name made lowercase.
-    globaldisplayindex = models.IntegerField(db_column='GlobalDisplayIndex', blank=True, null=True)  # Field name made lowercase.
-    children = models.IntegerField(db_column='Children', blank=True, null=True)  # Field name made lowercase.
-    displaycode = models.TextField(db_column='DisplayCode', blank=True, null=True)  # Field name made lowercase.
-    internaldisplaycode = models.TextField(db_column='InternalDisplayCode', blank=True, null=True)  # Field name made lowercase.
-    id = models.AutoField(db_column='Id', blank=True, primary_key = True)  # Field name made lowercase.
-    showafterid = models.IntegerField(db_column='ShowAfterId', blank=True, null=True)  # Field name made lowercase.
+    qid = models.IntegerField(db_column='QId', blank=True, null=True)
+    objecttype = models.IntegerField(db_column='ObjectType', blank=True, null=True)
+    categoryid = models.IntegerField(db_column='CategoryId', blank=True, null=True)
+    questionid = models.TextField(db_column='QuestionId', blank=True, null=True)
+    commentid = models.TextField(db_column='CommentId', blank=True, null=True)
+    parentid = models.TextField(db_column='ParentId', blank=True, null=True)
+    parenttype = models.TextField(db_column='ParentType', blank=True, null=True)
+    displayindex = models.IntegerField(db_column='DisplayIndex', blank=True, null=True)
+    displaylevel = models.IntegerField(db_column='DisplayLevel', blank=True, null=True)
+    objectid = models.TextField(db_column='ObjectId', blank=True, null=True)
+    parentcategory = models.TextField(db_column='ParentCategory', blank=True, null=True)
+    globaldisplayindex = models.IntegerField(db_column='GlobalDisplayIndex', blank=True, null=True)
+    children = models.IntegerField(db_column='Children', blank=True, null=True)
+    displaycode = models.TextField(db_column='DisplayCode', blank=True, null=True)
+    internaldisplaycode = models.TextField(db_column='InternalDisplayCode', blank=True, null=True)
+    id = models.AutoField(db_column='Id', blank=True, primary_key=True)
+    showafterid = models.IntegerField(db_column='ShowAfterId', blank=True, null=True)
 
     class Meta:
         managed = False
@@ -46,10 +46,10 @@ class Questionpoolnew(models.Model):
     origin = models.IntegerField(db_column='Origin', blank=True, null=True)  # Field name made lowercase.
     origincode = models.TextField(db_column='OriginCode', blank=True, null=True)  # Field name made lowercase.
     categorynewid = models.TextField(db_column='CategoryNewID', blank=True, null=True)  # Field name made lowercase.
-    defaultdisplayindex = models.TextField(db_column='DefaultDisplayIndex', blank=True, null=True)  # Field name made lowercase.
+    defaultdisplayindex = models.TextField(db_column='DefaultDisplayIndex', blank=True, null=True)
     creationinfo = models.TextField(db_column='CreationInfo', blank=True, null=True)  # Field name made lowercase.
     conceptuallink = models.TextField(db_column='ConceptualLink', blank=True, null=True)  # Field name made lowercase.
-    questiontypeid = models.IntegerField(db_column='QuestionTypeID', blank=True, null=True)  # Field name made lowercase.
+    questiontypeid = models.IntegerField(db_column='QuestionTypeID', blank=True, null=True)
     parentid = models.TextField(db_column='ParentId', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -58,18 +58,18 @@ class Questionpoolnew(models.Model):
 
 
 class Viqinfo(models.Model):
-    qid = models.AutoField(db_column='QId', blank=True, primary_key = True)  # Field name made lowercase.
-    title = models.TextField(db_column='Title', blank=True, null=True)  # Field name made lowercase.
-    comments = models.TextField(db_column='Comments', blank=True, null=True)  # Field name made lowercase.
-    author = models.TextField(db_column='Author', blank=True, null=True)  # Field name made lowercase.
-    finalized = models.TextField(db_column='Finalized', blank=True, null=True)  # Field name made lowercase.
-    registrationdate = models.TextField(db_column='RegistrationDate', blank=True, null=True)  # Field name made lowercase.
-    numofquestions = models.IntegerField(db_column='NumOfQuestions', blank=True, null=True)  # Field name made lowercase.
-    viqgui = models.TextField(db_column='VIQGUI', blank=True, null=True)  # Field name made lowercase.
-    effectivedate = models.TextField(db_column='EffectiveDate', blank=True, null=True)  # Field name made lowercase.
+    qid = models.AutoField(db_column='QId', blank=True, primary_key=True)
+    title = models.TextField(db_column='Title', blank=True, null=True)
+    comments = models.TextField(db_column='Comments', blank=True, null=True)
+    author = models.TextField(db_column='Author', blank=True, null=True)
+    finalized = models.TextField(db_column='Finalized', blank=True, null=True)
+    registrationdate = models.TextField(db_column='RegistrationDate', blank=True, null=True)
+    numofquestions = models.IntegerField(db_column='NumOfQuestions', blank=True, null=True)
+    viqgui = models.TextField(db_column='VIQGUI', blank=True, null=True)
+    effectivedate = models.TextField(db_column='EffectiveDate', blank=True, null=True)
     version = models.TextField(blank=True, null=True)
-    securitycolumn = models.TextField(db_column='SecurityColumn', blank=True, null=True)  # Field name made lowercase.
-    visible = models.TextField(db_column='Visible', blank=True, null=True)  # Field name made lowercase.
+    securitycolumn = models.TextField(db_column='SecurityColumn', blank=True, null=True)
+    visible = models.TextField(db_column='Visible', blank=True, null=True)
 
     class Meta:
         managed = False
@@ -81,7 +81,7 @@ class Answer(models.Model):
     InspectorName = models.TextField(blank=True, null=True)
     answer = models.IntegerField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
-    date_of_creation = models.DateTimeField( auto_now_add=False, default=datetime.today, blank=True, null=True)
+    date_of_creation = models.DateTimeField(auto_now_add=False, default=datetime.today, blank=True, null=True)
     questionid = models.TextField(blank=True, null=True)
     questioncode = models.TextField(blank=True, null=True)
     categoryid = models.IntegerField(blank=True, null=True)
@@ -94,21 +94,16 @@ class Answer(models.Model):
     date_in_vessel = models.TextField(blank=True, null=True)
 
 
-def user_directory_path(instance):
+def user_directory_path(instance , name):
     # путь, куда будет осуществлена загрузка MEDIA_ROOT/user_username
-    # вопрос по медия рут ( читал про отдельный домен что бы избежать уязвимостей xss)-спросить у Димы
-    # папка не создаются -разобраться!!!
-    # может нужно просто создавать папку когда создается новый пользователь в модели? os.mkdir? или в модели ответа?
-    return 'user_{0}'.format(instance.user.username)
+
+    return 'user_{0}/{1}'.format(instance.answer, name+'.png')
 
 
 class Image(models.Model):
     image = models.ImageField(upload_to=user_directory_path)
-
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='images')
-    # не отображает миниатюры в админке!
-    # не заходит в функцию в дебагере ?
-    # возможно это из-за неправильного сохранения фото?
+
     def image_img(self):
         if self.image:
             return mark_safe(u'<a href="{0}" target="_blank"><img src="{0}" width="100"/></a>'.format(self.image.url))
@@ -224,5 +219,3 @@ class User(AbstractBaseUser, PermissionsMixin):
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token
-
-

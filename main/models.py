@@ -78,7 +78,8 @@ class Viqinfo(models.Model):
 
     # переработать вопросы ( создать портфель вопросов, может включать разное кол-во ответов)
 class Answer(models.Model):
-    InspectorName = models.TextField(blank=True, null=True)
+    # id_case = models.IntegerField(max_)
+    # InspectorName = models.TextField(blank=True, null=True)
     answer = models.IntegerField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
     date_of_creation = models.DateTimeField(auto_now_add=False, default=datetime.today, blank=True, null=True)
@@ -87,17 +88,18 @@ class Answer(models.Model):
     categoryid = models.IntegerField(blank=True, null=True)
     origin = models.TextField(blank=True, null=True)
     categorynewid = models.TextField(blank=True, null=True)
-    vessel = models.CharField(max_length=255, blank=True, null=True)
-    port = models.CharField(max_length=255, blank=True, null=True)
-    InspectionTypes = models.TextField(blank=True, null=True)
-    InspectionSource = models.TextField(blank=True, null=True)
+    # vessel = models.CharField(max_length=255, blank=True, null=True)
+    # port = models.CharField(max_length=255, blank=True, null=True)
+    # InspectionTypes = models.TextField(blank=True, null=True)
+    # InspectionSource = models.TextField(blank=True, null=True)
     date_in_vessel = models.TextField(blank=True, null=True)
+    # briefcase = models.ForeignKey(Briefcase, on_delete=models.CASCADE, related_name='Answer')
+
 
 
 def user_directory_path(instance , name):
     # путь, куда будет осуществлена загрузка MEDIA_ROOT/user_username
-
-    return 'user_{0}/{1}'.format(instance.answer, name+'.png')
+    return 'user_{0}/{1}'.format(instance.answer.questionid, name+'.png')
 
 
 class Image(models.Model):
@@ -106,12 +108,42 @@ class Image(models.Model):
 
     def image_img(self):
         if self.image:
-            return mark_safe(u'<a href="{0}" target="_blank"><img src="{0}" width="100"/></a>'.format(self.image.url))
+            return mark_safe(u'<a href="{0}" target="_blank"><img src="{0}" width="200"/></a>'.format(self.image.url))
         else:
             return '(no Photography)'
 
     image_img.short_description = 'Photography'
     image_img.allow_tags = True
+
+    def __str__(self):
+        return self.image.url
+
+
+# class Briefcase(models.Model):
+#     id_case = models.IntegerField()
+#     InspectorName = models.TextField(blank=True, null=True)
+#     InspectionTypes = models.TextField(blank=True, null=True)
+#     InspectionSource = models.TextField(blank=True, null=True)
+#     vessel = models.CharField(max_length=255, blank=True, null=True)
+#     port = models.CharField(max_length=255, blank=True, null=True)
+#     name_case = models.TextField(max_length=255)
+#     date_of_creation = models.DateTimeField(blank=True, null=True)
+#
+#
+#     def __str__(self):
+#         return self.name_case
+#
+#
+# class Note(models.Model):
+#     id_case = models.IntegerField()
+#     name = models.CharField(max_length=255, blank=True, null=True)
+#     comment = models.TextField(blank=True, null=True)
+#     briefcase = models.ForeignKey(Briefcase, on_delete=models.CASCADE, related_name='Note')
+#
+#     def __str__(self):
+#         return self.name
+
+
 
 
 class UserManager(BaseUserManager):
@@ -184,7 +216,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Сообщает Django, что класс UserManager, определенный выше,
     # должен управлять объектами этого типа.
     objects = UserManager()
-
 
 
     def __str__(self):

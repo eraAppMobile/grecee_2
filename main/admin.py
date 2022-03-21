@@ -12,20 +12,20 @@ from main.models import Answer, User, Image
 
 class GalleryInline(admin.TabularInline):
     model = Image
-    readonly_fields = ['image_img', ]
-    fields = ['image_img', ]
-    list_display = ['image_img']
-
+    readonly_fields = ['image_img',]
+    fields = ['image_img',]
+    extra = 0
+    can_delete = False
 
 
 
 @admin.register(Answer)
 class Answer(admin.ModelAdmin):
+
     inlines = [
         GalleryInline,
     ]
 
-    # ??!!!сделать галерею фото без редактирования!!
     save_as = True
 
     def get_readonly_fields(self, request, obj=None):
@@ -44,13 +44,11 @@ class Answer(admin.ModelAdmin):
                     'InspectionTypes',
                     'InspectionSource',
                     'date_in_vessel',
-
                     ]
         return self.readonly_fields
     # узнать как изменить отображение полей (изменить на горизонтально или еще какой-либо удобный вариант)
     def has_add_permission(self, request):
         return False
-
 
 
 class UserCreationForm(forms.ModelForm):
@@ -98,9 +96,6 @@ class UserChangeForm(forms.ModelForm):
     def clean_password(self):
         # удалит все что введет пользователь
         return self.initial["password"]
-
-
-
 
 
 class MyUserAdmin(UserAdmin):

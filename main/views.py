@@ -63,24 +63,18 @@ class Answers (APIView):
         )
         # написать цикл если изображений будет приходить несколько
         if data['data_image']:
-
-
-            image_answer = base64.b64decode(data['data_image'])
-            # сохраняет не в медия а так в каталог
-            # но метод не правильный, как я думаю
-            # имя файла?
-            # image = Img.open(io.BytesIO(image_answer)).save('image1.png',)
             name = data.get("answer")['InspectorName']
-            # image = Img.open(io.BytesIO(image_answer)).save(name + '.png')
-            image = Img.open(io.BytesIO(image_answer))
-            image_io = io.BytesIO()
-            image.save(image_io, format='png', name=name, quality=80)
-            image_bd = ContentFile(image_io.getvalue(), name=name)
-            Image.objects.create(
-                answer=new_answer,
-                image=image_bd,
-            )
-        return Response({'status': 'Success!'})  # возвращаем успешный ответ
+            for data in data['data_image'].values():
+                image_answer = base64.b64decode(data)
+                image = Img.open(io.BytesIO(image_answer))
+                image_io = io.BytesIO()
+                image.save(image_io, format='png', name=name, quality=80)
+                image_bd = ContentFile(image_io.getvalue(), name=name)
+                Image.objects.create(
+                    answer=new_answer,
+                    image=image_bd,
+                )
+            return Response({'status': 'Success!'})  # возвращаем успешный ответ
 
 
 class AnswerMVP (APIView):

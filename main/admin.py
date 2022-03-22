@@ -5,9 +5,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 from django import forms
-from django.utils.safestring import mark_safe
 
-from main.models import Answer, User, Image
+from main.models import Answer, User, Image, Briefcase
 
 
 class GalleryInline(admin.TabularInline):
@@ -18,19 +17,15 @@ class GalleryInline(admin.TabularInline):
     can_delete = False
 
 
-
-@admin.register(Answer)
-class Answer(admin.ModelAdmin):
-
-    inlines = [
-        GalleryInline,
-    ]
-
+class Answer(admin.TabularInline):
+    model = Answer
+    inlines = [GalleryInline]
     save_as = True
 
     def get_readonly_fields(self, request, obj=None):
         if obj:  # when editing an object
-            return ['InspectorName',
+            return [
+                    'question',
                     'answer',
                     'comment',
                     'date_of_creation',
@@ -39,16 +34,46 @@ class Answer(admin.ModelAdmin):
                     'categoryid',
                     'origin',
                     'categorynewid',
-                    'vessel',
-                    'port',
+
+                    ]
+        return self.readonly_fields
+
+    def has_add_permission(self, request, *args, **kwargs):
+        return False
+
+
+@admin.register(Briefcase)
+class BriefcaseAdmin(admin.ModelAdmin):
+    inlines = [Answer]
+    fields = ['name_case',
+                    'InspectorName',
                     'InspectionTypes',
                     'InspectionSource',
+                    'vessel',
+                    'port',
+                    'date_of_creation',
+                    'date_in_vessel']
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # when editing an object
+            return [
+                    'name_case',
+                    'InspectorName',
+                    'InspectionTypes',
+                    'InspectionSource',
+                    'vessel',
+                    'port',
+                    'date_of_creation',
                     'date_in_vessel',
                     ]
         return self.readonly_fields
-    # узнать как изменить отображение полей (изменить на горизонтально или еще какой-либо удобный вариант)
-    def has_add_permission(self, request):
+
+    def has_add_permission(self, request, *args, **kwargs):
         return False
+
+
+
+
 
 
 class UserCreationForm(forms.ModelForm):

@@ -78,23 +78,23 @@ class Viqinfo(models.Model):
 
     # переработать вопросы ( создать портфель вопросов, может включать разное кол-во ответов)
 class Answer(models.Model):
-    # id_case = models.IntegerField(max_)
-    # InspectorName = models.TextField(blank=True, null=True)
+    # id_case = models.IntegerField(max_) # Briefcase
+    # InspectorName = models.TextField(blank=True, null=True) #Briefcase
     answer = models.IntegerField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
     date_of_creation = models.DateTimeField(auto_now_add=False, default=datetime.today, blank=True, null=True)
     questionid = models.TextField(blank=True, null=True)
+    question = models.TextField(blank=True, null=True)
     questioncode = models.TextField(blank=True, null=True)
     categoryid = models.IntegerField(blank=True, null=True)
     origin = models.TextField(blank=True, null=True)
     categorynewid = models.TextField(blank=True, null=True)
-    # vessel = models.CharField(max_length=255, blank=True, null=True)
-    # port = models.CharField(max_length=255, blank=True, null=True)
-    # InspectionTypes = models.TextField(blank=True, null=True)
-    # InspectionSource = models.TextField(blank=True, null=True)
-    date_in_vessel = models.TextField(blank=True, null=True)
-    # briefcase = models.ForeignKey(Briefcase, on_delete=models.CASCADE, related_name='Answer')
-
+    # vessel = models.CharField(max_length=255, blank=True, null=True) #Briefcase
+    # port = models.CharField(max_length=255, blank=True, null=True) #Briefcase
+    # InspectionTypes = models.TextField(blank=True, null=True) #Briefcase
+    # InspectionSource = models.TextField(blank=True, null=True) #Briefcase
+    briefcase = models.ForeignKey('Briefcase', on_delete=models.CASCADE,
+                                  related_name='briefcase', blank=True, null=True)  # new
 
 
 def user_directory_path(instance , name):
@@ -119,31 +119,19 @@ class Image(models.Model):
         return self.image.url
 
 
-# class Briefcase(models.Model):
-#     id_case = models.IntegerField()
-#     InspectorName = models.TextField(blank=True, null=True)
-#     InspectionTypes = models.TextField(blank=True, null=True)
-#     InspectionSource = models.TextField(blank=True, null=True)
-#     vessel = models.CharField(max_length=255, blank=True, null=True)
-#     port = models.CharField(max_length=255, blank=True, null=True)
-#     name_case = models.TextField(max_length=255)
-#     date_of_creation = models.DateTimeField(blank=True, null=True)
-#
-#
-#     def __str__(self):
-#         return self.name_case
-#
-#
-# class Note(models.Model):
-#     id_case = models.IntegerField()
-#     name = models.CharField(max_length=255, blank=True, null=True)
-#     comment = models.TextField(blank=True, null=True)
-#     briefcase = models.ForeignKey(Briefcase, on_delete=models.CASCADE, related_name='Note')
-#
-#     def __str__(self):
-#         return self.name
+class Briefcase(models.Model):
+    id_case = models.IntegerField()
+    InspectorName = models.TextField(blank=True, null=True)
+    InspectionTypes = models.TextField(blank=True, null=True)
+    InspectionSource = models.TextField(blank=True, null=True)
+    vessel = models.CharField(max_length=255, blank=True, null=True)
+    port = models.CharField(max_length=255, blank=True, null=True)
+    name_case = models.TextField(max_length=255)
+    date_of_creation = models.DateTimeField(auto_now_add=False, default=datetime.today, blank=True, null=True)
+    date_in_vessel = models.DateTimeField(blank=True, null=True)
 
-
+    def __str__(self):
+        return self.name_case
 
 
 class UserManager(BaseUserManager):

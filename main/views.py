@@ -8,7 +8,7 @@ import io
 import base64
 
 
-from .models import Viq, Viqinfo, Questionpoolnew, Answer, Image
+from .models import Viq, Viqinfo, Questionpoolnew, Answer, Image, Briefcase
 from .serializers import AnswerMVPSerializer, LoginSerializer
 
 
@@ -45,36 +45,42 @@ class Answers (APIView):
         data = request.data
         # try:
         #     if Answer.objects.filter():
-
-        new_answer = Answer.objects.create(
-            InspectorName=data.get("answer")['InspectorName'],
-            answer=data.get("answer")['answer'],
-            comment=data.get("answer")['comment'],
-            questionid=data.get("answer")['questionid'],
-            questioncode=data.get("answer")['questioncode'],
-            categoryid=data.get("answer")['categoryid'],
-            categorynewid=data.get("answer")['categorynewid'],
-            origin=data.get("answer")['origin'],
-            vessel=data.get("answer")['vessel'],
-            port=data.get("answer")['port'],
-            InspectionTypes=data.get("answer")['InspectionTypes'],
-            InspectionSource=data.get("answer")['InspectionSource'],
-            date_in_vessel=data.get("answer")['date_in_vessel'],
+        new_briefcase = Briefcase.objects.create(
+            id_case=data.get("briefcase")['id_case'],
+            InspectorName=data.get("briefcase")['InspectorName'],
+            InspectionTypes=data.get("briefcase")['InspectionTypes'],
+            InspectionSource=data.get("briefcase")['InspectionSource'],
+            vessel=data.get("briefcase")['vessel'],
+            port=data.get("briefcase")['port'],
+            date_in_vessel=data.get("briefcase")['date_in_vessel'],
         )
+        for answer in data['answer'].values():
+
+            new_answer = Answer.objects.create(
+                briefcase=new_briefcase,
+                answer=answer['answer'], #заменить на ответы с таблицы
+                comment=answer['comment'],
+                questionid=answer['questionid'],
+                question=answer['question'],
+                questioncode=answer['questioncode'],
+                categoryid=answer['categoryid'],
+                categorynewid=answer['categorynewid'],
+                origin=answer['origin'],
+            )
         # написать цикл если изображений будет приходить несколько
-        if data['data_image']:
-            name = data.get("answer")['InspectorName']
-            for data in data['data_image'].values():
-                image_answer = base64.b64decode(data)
-                image = Img.open(io.BytesIO(image_answer))
-                image_io = io.BytesIO()
-                image.save(image_io, format='png', name=name, quality=80)
-                image_bd = ContentFile(image_io.getvalue(), name=name)
-                Image.objects.create(
-                    answer=new_answer,
-                    image=image_bd,
-                )
-            return Response({'status': 'Success!'})  # возвращаем успешный ответ
+            if answer['data_image']:
+                name = data.get("briefcase")['InspectorName']
+                for data in answer['data_image'].values():
+                    image_answer = base64.b64decode(data)
+                    image = Img.open(io.BytesIO(image_answer))
+                    image_io = io.BytesIO()
+                    image.save(image_io, format='png', name=name, quality=80)
+                    image_bd = ContentFile(image_io.getvalue(), name=name)
+                    Image.objects.create(
+                        answer=new_answer,
+                        image=image_bd,
+                    )
+                return Response({'status': 'Success!'})  # возвращаем успешный ответ
 
 
 class AnswerMVP (APIView):

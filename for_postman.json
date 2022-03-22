@@ -6,3 +6,41 @@ http://127.0.0.1:8000/api/answer?authenticate=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJ
 
 {'глава':{"qid": "title","qid": "title","qid": "title","qid": "title",}
 'category':{'id':'name_caategory''id':'name_caategory''id':'name_caategory''id':'name_caategory'}}
+
+
+ты сможешь такой json формировать:
+ {"briefcase": {
+     "id_case":"value",
+      "InspectorName":"value",
+      "InspectionTypes":"value",
+      "InspectionSource":"value",
+      "vessel":"","port":"value",
+      "date_in_vessel":"value",
+                },
+  "answer":{ "questionid":{
+                        "answer":"value",
+                        "comment":"value",
+                        "questionid":"value",
+                        "question":"value",
+                        "questioncode":"value",
+                        "categoryid":"value",
+                        "categorynewid":"value",
+                        "origin":"value",
+                        }, "data_image":{
+                                        "foto1":"value","foto2":"value""foto3":"value""foto3":"value", итд
+                        }
+            { "answer2":{
+                        "answer":"value",
+                        "comment":"value",
+                        "questionid":"value",
+                        "question":"value",
+                        "questioncode":"value",
+                        "categoryid":"value",
+                        "categorynewid":"value",
+                        "origin":"value",
+                        }, "data_image":{
+                                        "foto1":"value","foto2":"value""foto3":"value""foto3":"value", итд
+                        }
+ }
+ }
+ }

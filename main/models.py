@@ -1,5 +1,6 @@
 
 from datetime import datetime, timedelta
+from functools import cached_property
 
 import jwt as jwt
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
@@ -8,6 +9,7 @@ from django.core import validators
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 
@@ -78,8 +80,6 @@ class Viqinfo(models.Model):
 
     # переработать вопросы ( создать портфель вопросов, может включать разное кол-во ответов)
 class Answer(models.Model):
-    # id_case = models.IntegerField(max_) # Briefcase
-    # InspectorName = models.TextField(blank=True, null=True) #Briefcase
     answer = models.IntegerField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
     date_of_creation = models.DateTimeField(auto_now_add=False, default=datetime.today, blank=True, null=True)
@@ -89,12 +89,11 @@ class Answer(models.Model):
     categoryid = models.IntegerField(blank=True, null=True)
     origin = models.TextField(blank=True, null=True)
     categorynewid = models.TextField(blank=True, null=True)
-    # vessel = models.CharField(max_length=255, blank=True, null=True) #Briefcase
-    # port = models.CharField(max_length=255, blank=True, null=True) #Briefcase
-    # InspectionTypes = models.TextField(blank=True, null=True) #Briefcase
-    # InspectionSource = models.TextField(blank=True, null=True) #Briefcase
     briefcase = models.ForeignKey('Briefcase', on_delete=models.CASCADE,
-                                  related_name='briefcase', blank=True, null=True)  # new
+                                  related_name='briefcase', blank=True, null=True)
+
+    def __str__(self):
+        return self.questionid
 
 
 def user_directory_path(instance , name):
@@ -108,7 +107,8 @@ class Image(models.Model):
 
     def image_img(self):
         if self.image:
-            return mark_safe(u'<a href="{0}" target="_blank"><img src="{0}" width="200"/></a>'.format(self.image.url))
+            return self.image.url
+                # mark_safe(u'<a href="{0}" target="_blank"><img src="{0}" width="200"/></a>'.format(self.image.url))
         else:
             return '(no Photography)'
 

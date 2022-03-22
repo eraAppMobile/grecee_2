@@ -43,6 +43,7 @@ class Answers (APIView):
     # переработать вопросы ( создать портфель вопросов, может включать разное кол-во ответов)
     def post(self, request):
         data = request.data
+        name = data.get("briefcase")['InspectorName']
         # try:
         #     if Answer.objects.filter():
         new_briefcase = Briefcase.objects.create(
@@ -55,7 +56,6 @@ class Answers (APIView):
             date_in_vessel=data.get("briefcase")['date_in_vessel'],
         )
         for answer in data['answer'].values():
-
             new_answer = Answer.objects.create(
                 briefcase=new_briefcase,
                 answer=answer['answer'], #заменить на ответы с таблицы
@@ -67,9 +67,9 @@ class Answers (APIView):
                 categorynewid=answer['categorynewid'],
                 origin=answer['origin'],
             )
-        # написать цикл если изображений будет приходить несколько
+
+            # написать цикл если изображений будет приходить несколько
             if answer['data_image']:
-                name = data.get("briefcase")['InspectorName']
                 for data in answer['data_image'].values():
                     image_answer = base64.b64decode(data)
                     image = Img.open(io.BytesIO(image_answer))
@@ -80,7 +80,9 @@ class Answers (APIView):
                         answer=new_answer,
                         image=image_bd,
                     )
-                return Response({'status': 'Success!'})  # возвращаем успешный ответ
+                continue
+            continue
+        return Response({'status': 'Success!'})  # возвращаем успешный ответ
 
 
 class AnswerMVP (APIView):

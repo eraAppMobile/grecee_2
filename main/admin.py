@@ -9,7 +9,8 @@ from django import forms
 from main.models import Answer, User, Image, Briefcase
 
 
-class GalleryInline(admin.TabularInline):
+@admin.register(Image)
+class GalleryInline(admin.ModelAdmin):
     model = Image
     readonly_fields = ['image_img',]
     fields = ['image_img',]
@@ -19,8 +20,8 @@ class GalleryInline(admin.TabularInline):
 
 class Answer(admin.TabularInline):
     model = Answer
-    inlines = [GalleryInline]
     save_as = True
+    can_delete = False
 
     def get_readonly_fields(self, request, obj=None):
         if obj:  # when editing an object
@@ -34,9 +35,13 @@ class Answer(admin.TabularInline):
                     'categoryid',
                     'origin',
                     'categorynewid',
-
+                    'get_photo',
                     ]
         return self.readonly_fields
+
+    def get_photo(self, obj):
+        return obj.image.image_img()
+    get_photo.short_description = 'Photo'
 
     def has_add_permission(self, request, *args, **kwargs):
         return False
@@ -45,14 +50,16 @@ class Answer(admin.TabularInline):
 @admin.register(Briefcase)
 class BriefcaseAdmin(admin.ModelAdmin):
     inlines = [Answer]
-    fields = ['name_case',
-                    'InspectorName',
-                    'InspectionTypes',
-                    'InspectionSource',
-                    'vessel',
-                    'port',
-                    'date_of_creation',
-                    'date_in_vessel']
+    fields = [
+                'name_case',
+                'InspectorName',
+                'InspectionTypes',
+                'InspectionSource',
+                'vessel',
+                'port',
+                'date_of_creation',
+                'date_in_vessel'
+                ]
 
     def get_readonly_fields(self, request, obj=None):
         if obj:  # when editing an object
@@ -70,9 +77,6 @@ class BriefcaseAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request, *args, **kwargs):
         return False
-
-
-
 
 
 

@@ -108,6 +108,7 @@ class Image(models.Model):
     def image_img(self):
         if self.image:
             return self.image.url
+
                 # mark_safe(u'<a href="{0}" target="_blank"><img src="{0}" width="200"/></a>'.format(self.image.url))
         else:
             return '(no Photography)'

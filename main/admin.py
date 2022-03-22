@@ -5,6 +5,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 from django import forms
+from django.utils.safestring import mark_safe
 
 from main.models import Answer, User, Image, Briefcase
 
@@ -40,7 +41,10 @@ class Answer(admin.TabularInline):
         return self.readonly_fields
 
     def get_photo(self, obj):
-        return obj.image.image_img()
+        href_for_admin = []
+        for href in obj.images.all():
+            href_for_admin.append(mark_safe(href))
+        return '\n'.join(href_for_admin)
     get_photo.short_description = 'Photo'
 
     def has_add_permission(self, request, *args, **kwargs):

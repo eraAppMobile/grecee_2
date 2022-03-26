@@ -1,6 +1,6 @@
 
 from datetime import datetime, timedelta
-from functools import cached_property
+
 
 import jwt as jwt
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
@@ -10,7 +10,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
+
 
 
 class Viq(models.Model):
@@ -55,7 +55,7 @@ class Questionpoolnew(models.Model):
     parentid = models.TextField(db_column='ParentId', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'questionpoolnew'
 
 
@@ -98,7 +98,9 @@ class Answer(models.Model):
 
 def user_directory_path(instance , name):
     # путь, куда будет осуществлена загрузка MEDIA_ROOT/user_username
-    return 'user_{0}/{1}'.format(instance.answer.questionid, name+'.png')
+    return 'Inspector_{0}/{1}/{2}'.format(
+        name, 'question_id_' + str(instance.answer.questionid), 'photo_'+str(instance.answer.questionid)+'.png'
+    )
 
 
 class Image(models.Model):
@@ -107,11 +109,11 @@ class Image(models.Model):
 
     def image_img(self):
         if self.image:
-            return self.image.url
-
-                # mark_safe(u'<a href="{0}" target="_blank"><img src="{0}" width="200"/></a>'.format(self.image.url))
+            return format_html(
+                u'<a href="{0}" target="_blank"><img src="{0}" width="200"/></a></a>'.format(self.image.url)
+            )
         else:
-            return '(no Photography)'
+            return 'no photography'
 
     image_img.short_description = 'Photography'
     image_img.allow_tags = True
@@ -121,7 +123,7 @@ class Image(models.Model):
 
 
 class Briefcase(models.Model):
-    id_case = models.IntegerField()
+
     InspectorName = models.TextField(blank=True, null=True)
     InspectionTypes = models.TextField(blank=True, null=True)
     InspectionSource = models.TextField(blank=True, null=True)
@@ -231,7 +233,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         этого пользователя и срок его действия
         составляет 60 дней в будущем.
         """
-        dt = datetime.now() + timedelta(days=60)
+        dt = datetime.now() + timedelta(days=600)
 
         token = jwt.encode({
             'id': self.pk,

@@ -18,11 +18,11 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 
 from grecee_2 import settings
-from main.views import LoginAPIView
 
 urlpatterns = [
     path('admin', admin.site.urls),
     path('', include('main.urls')),
+
     # re_path(r'^registration/?$', RegistrationAPIView.as_view(), name='user_registration'),
 ]
 if settings.DEBUG:

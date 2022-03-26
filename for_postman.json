@@ -36,7 +36,7 @@ http://127.0.0.1:8000/api/answer?authenticate=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJ
 
 
 {'глава':{"qid": "title","qid": "title","qid": "title","qid": "title",}
-'category':{'id':'name_caategory''id':'name_caategory''id':'name_caategory''id':'name_caategory'}}
+'category':{'name_category':[id,id1,id1....]}, }
 
 
 ты сможешь такой json формировать:

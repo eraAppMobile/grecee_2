@@ -1,25 +1,29 @@
 from django.contrib import admin
 
+
+from django.utils.html import format_html
 # Register your models here.
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 from django import forms
-from django.utils.safestring import mark_safe
 
 from main.models import Answer, User, Image, Briefcase
+
+admin.site.site_header = 'Era App development. Beta 0.1 for Lonia'
+
 
 
 @admin.register(Image)
 class GalleryInline(admin.ModelAdmin):
     model = Image
-    readonly_fields = ['image_img',]
-    fields = ['image_img',]
+    readonly_fields = ['image_img']
+    fields = ['image_img']
     extra = 0
     can_delete = False
 
 
-class Answer(admin.TabularInline):
+class AnswerInline(admin.TabularInline):
     model = Answer
     save_as = True
     can_delete = False
@@ -40,11 +44,20 @@ class Answer(admin.TabularInline):
                     ]
         return self.readonly_fields
 
+
+
     def get_photo(self, obj):
-        href_for_admin = []
-        for href in obj.images.all():
-            href_for_admin.append(mark_safe(href))
-        return '\n'.join(href_for_admin)
+
+        if obj.images.all():
+            href_for_admin = []
+            for href in obj.images.all():
+
+                href_for_admin.append(
+                    format_html(f'<a href="{href}" target="_blank"><img src="{href} " width="50"/></a</a>')
+                )
+            return format_html('\n'.join(href_for_admin))
+        return 'no photography'
+
     get_photo.short_description = 'Photo'
 
     def has_add_permission(self, request, *args, **kwargs):
@@ -53,7 +66,8 @@ class Answer(admin.TabularInline):
 
 @admin.register(Briefcase)
 class BriefcaseAdmin(admin.ModelAdmin):
-    inlines = [Answer]
+    inlines = [AnswerInline]
+    list_display =['name_case', 'date_of_creation', 'InspectorName', 'vessel', 'port', ]
     fields = [
                 'name_case',
                 'InspectorName',
@@ -117,7 +131,7 @@ class UserChangeForm(forms.ModelForm):
     поле отображения хэша пароля.
     """
     # смена пароля в админке
-    password = ReadOnlyPasswordHashField(label=("Password"),
+    password = ReadOnlyPasswordHashField(label="Password",
                                          help_text=("Raw passwords are not stored, so there is no way to see "
                                                     "this user's password, but you can change the password "
                                                     "using <a href=\"../password/\">this form</a>."))
@@ -140,16 +154,16 @@ class MyUserAdmin(UserAdmin):
     list_display = ('email', 'name', 'lastname', 'username', 'is_staff', 'is_active')
     list_filter = ('is_staff',)
     fieldsets = (
-        (None, {'fields': ('email', 'username', 'password')}),
+        (None, {'fields': ('email', 'username', 'password',)}),
         ('Personal info', {'fields': ('name', 'lastname')}),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
 
     add_fieldsets = (
-        (None, {
+        None, {
             'classes': ('wide',),
             'fields': ('email', 'username', 'password1', 'password2')}
-        ),
+        ,
     )
     search_fields = ('email', 'username', 'name', 'lastname')
     ordering = ('email',)

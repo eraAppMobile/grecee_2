@@ -1,3 +1,5 @@
+
+
 from django.core.files.base import ContentFile
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -14,14 +16,16 @@ from .serializers import AnswerMVPSerializer, LoginSerializer
 
 class Question(APIView):
 
-    def get(self, request):
+    @classmethod
+    def get(cls, request):
         listing = []
         for questions in Viqinfo.objects.all():
-            list_cat = {"qid": questions.qid, "title": questions.title}
-            listing.append(list_cat)
+            list_chapters = {"qid": questions.qid, "title": questions.title}
+            listing.append(list_chapters)
         return Response(listing)
 
-    def post(self, request):
+    @classmethod
+    def post(cls, request):
         data = request.data
         list_question = []
         for obj in Viq.objects.filter(qid=data['qid']):
@@ -33,21 +37,22 @@ class Question(APIView):
                     'comment': quest.comment,
                     'categoryid': quest.categoryid,
                     'origin' : quest.origin,
-                    'categorynewid': quest.categorynewid
+                    'categorynewid': quest.categorynewid,
+
                 }
                 list_question.append(list_dict)
         return Response(list_question)
 
 
 class Answers (APIView):
-    # переработать вопросы ( создать портфель вопросов, может включать разное кол-во ответов)
-    def post(self, request):
+
+    @classmethod
+    def post(cls, request):
+
         data = request.data
         name = data.get("briefcase")['InspectorName']
-        # try:
-        #     if Answer.objects.filter():
         new_briefcase = Briefcase.objects.create(
-            id_case=data.get("briefcase")['id_case'],
+            name_case=(data.get("briefcase")['name_case']).capitalize(),
             InspectorName=data.get("briefcase")['InspectorName'],
             InspectionTypes=data.get("briefcase")['InspectionTypes'],
             InspectionSource=data.get("briefcase")['InspectionSource'],
@@ -58,7 +63,7 @@ class Answers (APIView):
         for answer in data['answer'].values():
             new_answer = Answer.objects.create(
                 briefcase=new_briefcase,
-                answer=answer['answer'], #заменить на ответы с таблицы
+                answer=answer['answer'],  # заменить на ответы с таблицы
                 comment=answer['comment'],
                 questionid=answer['questionid'],
                 question=answer['question'],
@@ -69,7 +74,7 @@ class Answers (APIView):
             )
 
             # написать цикл если изображений будет приходить несколько
-            if answer['data_image']:
+            if 'data_image' in answer:
                 for data in answer['data_image'].values():
                     image_answer = base64.b64decode(data)
                     image = Img.open(io.BytesIO(image_answer))
@@ -81,12 +86,15 @@ class Answers (APIView):
                         image=image_bd,
                     )
                 continue
-            continue
+            else:
+                continue
+
         return Response({'status': 'Success!'})  # возвращаем успешный ответ
 
 
 class AnswerMVP (APIView):
-    def get(self, request):
+    @classmethod
+    def get(cls, request):
         listing = Answer.objects.all()
         result = AnswerMVPSerializer(listing, many=True)  # конвертируем их в json
         if not listing:

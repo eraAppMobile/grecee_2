@@ -153,18 +153,18 @@ class MyUserAdmin(UserAdmin):
     # Поля, которые будут использоваться при отображении модели пользователя.
     list_display = ('email', 'name', 'lastname', 'username', 'is_staff', 'is_active')
     list_filter = ('is_staff',)
-    fieldsets = (
+    fieldsets = [
         (None, {'fields': ('email', 'username', 'password',)}),
         ('Personal info', {'fields': ('name', 'lastname')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
-    )
+        ('Permissions', {'fields': ('is_staff', 'is_active')})
+    ]
 
-    add_fieldsets = (
-        None, {
+    add_fieldsets = [
+        (None, {
             'classes': ('wide',),
             'fields': ('email', 'username', 'password1', 'password2')}
-        ,
-    )
+         )
+    ]
     search_fields = ('email', 'username', 'name', 'lastname')
     ordering = ('email',)
     filter_horizontal = ()

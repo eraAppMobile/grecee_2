@@ -1,4 +1,5 @@
-import jwt
+import jwt as pyjwt
+
 
 from django.conf import settings
 
@@ -56,8 +57,11 @@ class JWTAuthentication(authentication.BaseAuthentication):
         Try to authenticate the given credentials. If authentication is
         successful, return the user and token. If not, throw an error.
         """
+
         try:
-            payload = jwt.decode(jwt=token, key=settings.SECRET_KEY, algorithms=['HS256'])
+
+            payload = pyjwt.decode(token, key=settings.SECRET_KEY, algorithms=['HS256'])
+
         except:
             msg = 'Invalid authentication. Could not decode token.'
             raise exceptions.AuthenticationFailed(msg)

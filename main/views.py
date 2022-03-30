@@ -24,6 +24,7 @@ class Question(APIView):
             listing.append(list_chapters)
         return Response(listing)
 
+
     @classmethod
     def post(cls, request):
         data = request.data
@@ -38,7 +39,6 @@ class Question(APIView):
                     'categoryid': quest.categoryid,
                     'origin' : quest.origin,
                     'categorynewid': quest.categorynewid,
-
                 }
                 list_question.append(list_dict)
         return Response(list_question)
@@ -48,7 +48,6 @@ class Answers (APIView):
 
     @classmethod
     def post(cls, request):
-
         data = request.data
         name = data.get("briefcase")['InspectorName']
         new_briefcase = Briefcase.objects.create(

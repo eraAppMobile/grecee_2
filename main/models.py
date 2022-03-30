@@ -1,8 +1,10 @@
 
 from datetime import datetime, timedelta
 
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
 
-import jwt as jwt
+import jwt as pyjwt
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin, User
 from django.core import validators
@@ -103,6 +105,7 @@ def user_directory_path(instance , name):
     )
 
 
+
 class Image(models.Model):
     image = models.ImageField(upload_to=user_directory_path)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='images')
@@ -120,6 +123,12 @@ class Image(models.Model):
 
     def __str__(self):
         return self.image.url
+
+
+@receiver(pre_delete, sender=Image)
+def image_model_delete(sender, instance, **kwargs):
+    if instance.image.name:
+        instance.image.delete(False)
 
 
 class Briefcase(models.Model):
@@ -218,26 +227,29 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def token(self):
-        """
-        Позволяет нам получить токен пользователя, вызвав `user.token` вместо
-        `user.generate_jwt_token().
 
-        Декоратор `@property` выше делает это возможным.
-        `token` называется «динамическим свойством ».
-        """
-        return self._generate_jwt_token()
-
-    def _generate_jwt_token(self):
-        """
-        Создает веб-токен JSON, в котором хранится идентификатор
-        этого пользователя и срок его действия
-        составляет 60 дней в будущем.
-        """
-        dt = datetime.now() + timedelta(days=600)
-
-        token = jwt.encode({
+        token = pyjwt.encode({
             'id': self.pk,
-            'exp': int(dt.strftime('%S'))
+            'email': self.email
+
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token
+
+
+# @property
+#     def _generate_jwt_token(self):
+#         """
+#         Создает веб-токен JSON, в котором хранится идентификатор
+#         этого пользователя и срок его действия
+#         составляет 60 дней в будущем.
+#         """
+#         dt = datetime.now() + timedelta(days=660)
+#
+#         token = pyjwt.encode({
+#             'id': self.pk,
+#             'email': self.email
+#
+#         }, settings.SECRET_KEY, algorithm='HS256')
+#
+#         return token

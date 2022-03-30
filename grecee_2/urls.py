@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin', admin.site.urls),
     path('', include('main.urls')),
 
+
     # re_path(r'^registration/?$', RegistrationAPIView.as_view(), name='user_registration'),
 ]
 if settings.DEBUG:

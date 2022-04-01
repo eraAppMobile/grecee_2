@@ -1,11 +1,10 @@
-from urllib import request
 
 from django.contrib.auth import logout, authenticate, login
-from django.contrib.auth.views import LoginView
+
 from django.core.files.base import ContentFile
-from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse
+
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -14,8 +13,7 @@ from PIL import Image as Img
 import io
 import base64
 
-# from .forms import LoginUserForm
-from .forms import LoginUserForm
+from .forms import LoginForm
 from .models import Viq, Viqinfo, Questionpoolnew, Answer, Image, Briefcase
 from .serializers import AnswerMVPSerializer, LoginSerializer
 
@@ -157,8 +155,29 @@ class LoginAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UserLogin(LoginView):
-    pass
+
+
+def login_site(request):
+    if request.user.is_authenticated:
+        return redirect(reverse('start'))
+
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(
+                request,
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password']
+            )
+            if user:
+                redirect_url = request.GET.get('next') or reverse('start')
+                login(request, user)
+                return redirect(redirect_url)
+
+    return request ('main/start.html')
+
+
+
 
 
 def logout_user(request):

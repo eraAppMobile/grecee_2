@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ionia Management (Beta 0.1)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/bootstrap/jquery-3.4.1.js"></script>
+    <script src="/static/bootstrap/popper.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Ionia Management</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="http://eraappmobile.com">EraAppMobile.com</a>
+                </li>
+
+            </ul>
+            <form class="d-flex">
+                {% if request.user.is_authenticated %}
+                    <li class="text-secondary" > Welcome, {{user.name}} &nbsp;
+                        <a class="btn btn-sm btn-outline-secondary" href="/admin">Admin panel</a> &nbsp;
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                    <a class="btn btn-sm btn-outline-secondary" href="/admin">Sign in</a>
+                {% endif %}
+
+            </form>
+        </div>
+    </div>
+</nav>
+<main class="container">
+    <div class="bg-light p-5 rounded">
+        <h1>MVP mobile apps for iphone</h1>
+        <br>
+        <p class="lead">Demonstration of the mobile application and project administration panel.<br>
+            To view submitted briefcases, click on "Briefcase" in the side menu
+            and select from the list of cases to view details </p>
+        {% if request.user.is_authenticated %}
+            <p class="mt-5 mb-3 text-muted"><em>* Go to admin panel </em></p>
+        {% endif %}
+    </div>
+
+    {# Sign In#}
+
+
+
+    {% if not request.user.is_authenticated %}
+
+        <div class="container center-block" style="width: 18rem; text-align: center">
+
+            <form method="post" action={% url 'login_site' %} >
+                <br>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="64.000000pt" height="64.000000pt" viewBox="0 0 64.000000 64.000000"
+                     preserveAspectRatio="xMidYMid meet">
+
+                    <g transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)"
+                       fill="#000000" stroke="none">
+                        <path d="M295 616 c-38 -17 -80 -62 -95 -100 -15 -41 -4 -45 13 -5 45 105 181
+139 264 66 92 -81 79 -218 -27 -274 -94 -50 -194 -12 -240 92 -12 25 -19 33
+-19 21 -1 -11 10 -39 24 -62 15 -25 20 -41 13 -39 -8 3 -30 -15 -51 -40 -35
+-42 -41 -45 -86 -45 -57 0 -81 -21 -81 -68 0 -42 31 -72 73 -72 21 0 41 -8 52
+-20 10 -11 26 -20 35 -20 10 0 20 -9 23 -20 7 -26 39 -26 62 0 17 18 31 20
+177 20 148 0 159 1 179 21 18 18 21 30 17 74 -5 61 -40 115 -94 147 l-34 20
+25 42 c74 126 -13 277 -158 276 -23 -1 -55 -7 -72 -14z m-31 -363 c65 -89 65
+-84 13 -163 -26 -38 -51 -70 -56 -70 -11 0 -21 25 -21 56 0 23 -3 24 -61 24
+-104 0 -152 47 -99 100 16 16 33 20 90 20 67 0 70 1 70 24 0 31 10 56 21 56 5
+0 24 -21 43 -47z m106 15 c26 0 61 7 78 16 52 27 117 -11 153 -89 25 -54 24
+-87 -4 -114 -23 -20 -31 -21 -170 -19 l-146 3 30 47 31 48 -41 63 c-22 35 -41
+67 -41 70 0 4 14 0 32 -9 17 -9 52 -16 78 -16z m-184 -35 c-10 -10 -19 5 -10
+18 6 11 8 11 12 0 2 -7 1 -15 -2 -18z m4 -158 c0 -19 -11 -19 -36 0 -18 14
+-18 14 9 15 17 0 27 -5 27 -15z"/>
+                    </g>
+                </svg>
+                <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+                <div class="form-floating">
+                    {% csrf_token %}
+                    <div class="form-floating">
+                        <input type="text" name="email" autofocus="" autocomplete="username" required=""  class="form-control" id="floatingInput" placeholder="name@example.com">
+                        <label for="floatingInput">Email address</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="password" name="password" autocomplete="current-password" required="" class="form-control" id="floatingPassword" placeholder="Password">
+
+                        <label for="floatingPassword">Password</label>
+                    </div>
+
+                    <div class="checkbox mb-3">
+                        <label>
+                            <input type="checkbox" value="remember-me"> Remember me
+                        </label>
+                    </div>
+                    <button class="w-100 btn btn-lg btn-primary" type="submit" href="login">Sign in</button>
+                    <p class="mt-5 mb-3 text-muted"><em>*To get your login and password, contact your EraApp administrator</em></p>
+                </div>
+            </form>
+
+
+    </div>
+
+
+
+    {% endif %}
+
+</main>
+</body>
+</html>

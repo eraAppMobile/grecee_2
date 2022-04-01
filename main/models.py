@@ -205,7 +205,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         )
 
     is_staff = models.BooleanField(default=False)
-
+    is_superuser = models.BooleanField(default=False, verbose_name='administrator')
     is_active = models.BooleanField(default=True)
 
     # Свойство `USERNAME_FIELD` сообщает нам, какое поле мы будем использовать для входа.

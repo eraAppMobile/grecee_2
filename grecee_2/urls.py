@@ -15,16 +15,25 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.shortcuts import redirect
+
+from django.urls import path, include
 
 from grecee_2 import settings
+from main.views import logout_user
 
 urlpatterns = [
-    path('admin', admin.site.urls ),
-    path('', include('main.urls')),
+    path('logout/', logout_user, name='logout'),
 
+    path('admin/logout/', lambda request: redirect('/logout/', permanent=False)),
+    path('admin/', admin.site.urls),
+
+    path('', include('main.urls')),
 
     # re_path(r'^registration/?$', RegistrationAPIView.as_view(), name='user_registration'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+handler404 = "main.views.page_not_found"

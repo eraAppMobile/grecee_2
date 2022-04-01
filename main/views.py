@@ -156,7 +156,6 @@ class LoginAPIView(APIView):
 
 
 
-
 def login_site(request):
     if request.user.is_authenticated:
         return redirect(reverse('start'))
@@ -170,13 +169,10 @@ def login_site(request):
                 password=form.cleaned_data['password']
             )
             if user:
-                redirect_url = request.GET.get('next') or reverse('start')
+                redirect_url = reverse('start')
                 login(request, user)
                 return redirect(redirect_url)
-
-    return request ('main/start.html')
-
-
+    return render(request, 'main/start.html')
 
 
 
@@ -184,5 +180,6 @@ def logout_user(request):
     logout(request)
     return redirect('start')
 
-# def pageNotFound(request, exception):
-#     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
+
+def page_not_found(request, exception):
+    return render(request, 'main/404.html')

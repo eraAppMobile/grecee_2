@@ -1,0 +1,91 @@
+#header{
+    background: rgb(33, 37, 41);
+    color: whitesmoke;
+    height : 37px;
+}
+#branding h1, #branding h1 a:link, #branding h1 a:visited{
+    color: whitesmoke;
+}
+
+#branding h1{
+    font-size: 1.25rem;
+    font-family: system-ui,-apple-system, Helvetica Neue, sans-serif;
+
+}
+
+a:link, a:visited{
+    color: rgb(33, 37, 41);
+}
+
+.dashboard #content {
+    width: 75%;
+}
+
+.module h2, .module caption, .inline-group h2{
+    background: rgb(78, 88, 97);
+    color: whitesmoke;
+}
+
+div.breadcrumbs{
+    background: rgb(65, 74, 82 );
+}
+
+#nav-sidebar .current-model{
+    background: rgb(225, 226, 227);
+}
+
+.object-tools a:link, .object-tools a.addlink{
+    background-image: none;
+    font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+    color: #fff;
+    background-color: #3f4141;
+    border-color: #717375;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    padding: 0.375rem 0.75rem;
+    font-size: 14px;;
+    border-radius: 0.25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+input[type=submit], button{
+    font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+    color: #fff;
+    background-color: #3f4141;
+    border-color: #717375;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    padding: 0.375rem 0.75rem;
+    font-size: 14px;;
+    border-radius: 0.25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+#toolbar {
+
+    top: 0.65rem;
+    right: 0.65rem;
+    z-index: 10;
+    display: block;
+    padding: 0.25rem 0.5rem;
+    font-size: .65em;
+    color: #0d6efd;
+    background-color: #fff;
+
+    border-radius: 0.25rem;
+}
+

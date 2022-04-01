@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from django.contrib.admin import SimpleListFilter
 
 from django.utils.html import format_html
 # Register your models here.
@@ -25,6 +25,7 @@ class GalleryInline(admin.ModelAdmin):
 
 class AnswerInline(admin.TabularInline):
     model = Answer
+    list_filter = ['categorynewid']
     save_as = True
     can_delete = False
 
@@ -67,7 +68,7 @@ class AnswerInline(admin.TabularInline):
 @admin.register(Briefcase)
 class BriefcaseAdmin(admin.ModelAdmin):
     inlines = [AnswerInline]
-    list_display =['name_case', 'date_of_creation', 'InspectorName', 'vessel', 'port', ]
+    list_display = ['name_case', 'date_of_creation', 'InspectorName', 'vessel', 'port', ]
     fields = [
                 'name_case',
                 'InspectorName',
@@ -95,7 +96,6 @@ class BriefcaseAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request, *args, **kwargs):
         return False
-
 
 
 class UserCreationForm(forms.ModelForm):
@@ -151,12 +151,12 @@ class MyUserAdmin(UserAdmin):
     add_form = UserCreationForm
 
     # Поля, которые будут использоваться при отображении модели пользователя.
-    list_display = ('email', 'name', 'lastname', 'username', 'is_staff', 'is_active')
+    list_display = ('email', 'name', 'lastname', 'username', 'is_staff', 'is_active', 'is_superuser')
     list_filter = ('is_staff',)
     fieldsets = [
         (None, {'fields': ('email', 'username', 'password',)}),
         ('Personal info', {'fields': ('name', 'lastname')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')})
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser')})
     ]
 
     add_fieldsets = [

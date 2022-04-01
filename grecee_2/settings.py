@@ -41,10 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'rest_framework',
+    'crispy_forms',
 
 ]
-
-
+LOGIN_REDIRECT_URL = ''
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (

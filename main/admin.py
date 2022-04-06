@@ -1,5 +1,8 @@
+import csv
+import datetime
+
 from django.contrib import admin
-from django.contrib.admin import SimpleListFilter
+from django.http import HttpResponse
 
 from django.utils.html import format_html
 # Register your models here.
@@ -13,8 +16,7 @@ from main.models import Answer, User, Image, Briefcase
 admin.site.site_header = 'Era App development. Beta 0.1 for Lonia'
 
 
-
-@admin.register(Image)
+# @admin.register(Image)
 class GalleryInline(admin.ModelAdmin):
     model = Image
     readonly_fields = ['image_img']
@@ -28,7 +30,7 @@ class AnswerInline(admin.TabularInline):
     list_filter = ['categorynewid']
     save_as = True
     can_delete = False
-
+    actions = ["export_as_csv"]
     def get_readonly_fields(self, request, obj=None):
         if obj:  # when editing an object
             return [
@@ -45,28 +47,97 @@ class AnswerInline(admin.TabularInline):
                     ]
         return self.readonly_fields
 
-
-
     def get_photo(self, obj):
-
         if obj.images.all():
             href_for_admin = []
             for href in obj.images.all():
-
                 href_for_admin.append(
                     format_html(f'<a href="{href}" target="_blank"><img src="{href} " width="50"/></a</a>')
                 )
             return format_html('\n'.join(href_for_admin))
         return 'no photography'
-
     get_photo.short_description = 'Photo'
 
     def has_add_permission(self, request, *args, **kwargs):
         return False
 
 
+def export_to_csv(modeladmin, request, queryset):
+
+    opts = modeladmin.model._meta
+    opts_answer = Answer._meta.get_fields()
+    fields = [field for field in opts.get_fields()]
+    fields1 = [field for field in opts_answer]
+    list_chapters = [field.name.title() for field in fields]
+    list_answer = [field.name.title() for field in fields1]
+    list_csv = [*list_chapters, *list_answer]
+
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=%s.csv' % str(opts).replace('.', '_')
+
+    writer = csv.writer(response, delimiter=";")
+    writer.writerow(list_csv)
+
+    for obj in queryset:
+        data_row = []
+        for field in fields:
+            value = str(getattr(obj, field.name)).replace(";", "")
+            if isinstance(value, datetime.datetime):
+                value = value.strftime('%d/%m/%Y')
+            data_row.append(value)
+
+        for field in fields:
+            if field.many_to_many == True or field.one_to_many == True:
+                value = str("+").replace(";", "")
+                data_row.append(value)
+
+                for answer_in_briefcase in list(getattr(obj, field.name).all().values_list()):
+                    for element_answer in answer_in_briefcase:
+                        data_row.append(element_answer)
+
+                    writer.writerow(data_row)
+
+
+
+
+
+    # for obj in queryset:
+    #     data_row = []
+    #     for field in fields:
+    #         if field.many_to_many == True or field.one_to_many == True:
+    #             value = getattr(obj, field.name).all()
+    #
+    #             fields_answer = [value.query]
+    #             for i in fields_answer:
+    #                 print(i.model)
+
+    # for obj in queryset:
+    #     data_row = []
+    #     for field in fields:
+    #         value = str(getattr(obj, field.name)).replace(";", "")
+    #         if isinstance(value, datetime.datetime):
+    #             value = value.strftime('%d/%m/%Y')
+    #         data_row.append(value)
+    #     for field in fields:
+    #         if field.many_to_many == True or field.one_to_many == True:
+    #             if field.many_to_many == True or field.one_to_many == True:
+    #                 value = str("
+    #
+
+
+    # value = list(getattr(obj, field.name).all().values_list()) - ответы
+    # print(fields)
+    # writer.writerow([field.name.title() for field in fields])
+
+
+
+    return response
+
+
 @admin.register(Briefcase)
 class BriefcaseAdmin(admin.ModelAdmin):
+    actions = [export_to_csv]
     inlines = [AnswerInline]
     list_display = ['name_case', 'date_of_creation', 'InspectorName', 'vessel', 'port', ]
     fields = [
@@ -77,7 +148,7 @@ class BriefcaseAdmin(admin.ModelAdmin):
                 'vessel',
                 'port',
                 'date_of_creation',
-                'date_in_vessel'
+                'date_in_vessel',
                 ]
 
     def get_readonly_fields(self, request, obj=None):
@@ -96,6 +167,14 @@ class BriefcaseAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request, *args, **kwargs):
         return False
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['show_save_and_add_another'] = False
+        extra_context['show_save_and_continue'] = False
+        extra_context['show_save'] = False
+        return super(BriefcaseAdmin, self).change_view(request, object_id,
+                                                     form_url, extra_context=extra_context)
 
 
 class UserCreationForm(forms.ModelForm):

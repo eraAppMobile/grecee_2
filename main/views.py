@@ -21,6 +21,9 @@ from .serializers import AnswerMVPSerializer, LoginSerializer
 def start(request):
     return render(request, 'main/start.html')
 
+def index(request):
+    return render(request, 'main/index.html')
+
 
 class Question(APIView):
 

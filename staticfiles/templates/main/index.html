@@ -28,10 +28,9 @@
                     <li class="text-secondary" > Welcome, {{user.name}} &nbsp;
                         <a class="btn btn-sm btn-outline-secondary" href="/admin">Admin panel</a> &nbsp;
                         <a class="btn btn-sm btn-outline-secondary" href="{% url 'logout' %}">Logout</a>
-                         <a class="btn btn-sm btn-outline-secondary" href="{% url 'index' %}">Index</a></li>
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'start' %}">Home</a></li>
                 {% else %}
                     <a class="btn btn-sm btn-outline-secondary" href="/admin">Sign in</a>
-
                 {% endif %}
 
             </form>
@@ -39,7 +38,10 @@
     </div>
 </nav>
 <main class="container">
-    <div class="bg-light p-5 rounded">
+    <div class="h1">
+        Briefcase
+    </div>
+    <div class="bg-danger p-5 rounded">
         <h1>MVP mobile apps for iphone</h1>
         <br>
         <p class="lead">Demonstration of the mobile application and project administration panel.<br>

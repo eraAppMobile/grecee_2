@@ -13,6 +13,7 @@ urlpatterns = [
     re_path(r'^login/', LoginAPIView.as_view(), name='user_login'),
     path('login_site/', login_site, name='login_site'),
     path('logout/', logout_user, name='logout'),
+    path('index', views.index, name='index'),
 
 ]
 

@@ -82,21 +82,34 @@ def export_to_csv(modeladmin, request, queryset):
     for obj in queryset:
         data_row = []
         for field in fields:
-            value = str(getattr(obj, field.name)).replace(";", "")
+            value = getattr(obj, field.name)
+            if field.many_to_many is True or field.one_to_many is True:
+                value = str("+").replace(";", "")
+
             if isinstance(value, datetime.datetime):
-                value = value.strftime('%d/%m/%Y')
+                value = value.strftime('%d.%m.%Y')
             data_row.append(value)
 
         for field in fields:
-            if field.many_to_many == True or field.one_to_many == True:
-                value = str("+").replace(";", "")
-                data_row.append(value)
+            try:
+                if field.many_to_many is True or field.one_to_many is True:
+                    value = str(" ").replace(";", "")
+                    data_row.append(value)
 
                 for answer_in_briefcase in list(getattr(obj, field.name).all().values_list()):
+                    data_lite = []
                     for element_answer in answer_in_briefcase:
-                        data_row.append(element_answer)
+                        if isinstance(element_answer, datetime.datetime):
+                            element_answer = element_answer.strftime('%d.%m.%Y')
+                        data_lite.append(element_answer)
 
-                    writer.writerow(data_row)
+                    writer.writerow(data_row+data_lite)
+
+            except AttributeError:
+                continue
+
+
+
 
 
 

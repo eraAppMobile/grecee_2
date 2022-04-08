@@ -1,10 +1,12 @@
+from venv import create
 
 from django.contrib.auth import logout, authenticate, login
+from django.contrib.contenttypes.models import ContentType
 
 from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -99,7 +101,14 @@ class Answers (APIView):
             else:
                 continue
 
-        return Response({'status': 'Success!'})  # возвращаем успешный ответ
+        LogEntry.objects.log_action(
+            user_id=request.user.id,
+            content_type_id=ContentType.objects.get_for_model(Briefcase).pk,
+            object_id=new_briefcase.id,
+            object_repr=new_briefcase.name_case,
+            action_flag=ADDITION if create else CHANGE)
+        return Response({'status': 'Success!'})
+        # возвращаем успешный ответ
 
 
 class AnswerMVP (APIView):
@@ -186,3 +195,5 @@ def logout_user(request):
 
 def page_not_found(request, exception):
     return render(request, 'main/404.html')
+
+

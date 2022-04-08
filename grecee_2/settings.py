@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'crispy_forms',
 
+
 ]
 LOGIN_REDIRECT_URL = ''
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

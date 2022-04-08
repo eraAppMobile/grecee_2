@@ -10,6 +10,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 from django import forms
+from rest_framework import status
 
 from main.models import Answer, User, Image, Briefcase
 
@@ -72,7 +73,6 @@ def export_to_csv(modeladmin, request, queryset):
     list_answer = [field.name.title() for field in fields1]
     list_csv = [*list_chapters, *list_answer]
 
-
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=%s.csv' % str(opts).replace('.', '_')
 
@@ -108,43 +108,6 @@ def export_to_csv(modeladmin, request, queryset):
             except AttributeError:
                 continue
 
-
-
-
-
-
-
-
-    # for obj in queryset:
-    #     data_row = []
-    #     for field in fields:
-    #         if field.many_to_many == True or field.one_to_many == True:
-    #             value = getattr(obj, field.name).all()
-    #
-    #             fields_answer = [value.query]
-    #             for i in fields_answer:
-    #                 print(i.model)
-
-    # for obj in queryset:
-    #     data_row = []
-    #     for field in fields:
-    #         value = str(getattr(obj, field.name)).replace(";", "")
-    #         if isinstance(value, datetime.datetime):
-    #             value = value.strftime('%d/%m/%Y')
-    #         data_row.append(value)
-    #     for field in fields:
-    #         if field.many_to_many == True or field.one_to_many == True:
-    #             if field.many_to_many == True or field.one_to_many == True:
-    #                 value = str("
-    #
-
-
-    # value = list(getattr(obj, field.name).all().values_list()) - ответы
-    # print(fields)
-    # writer.writerow([field.name.title() for field in fields])
-
-
-
     return response
 
 
@@ -179,7 +142,7 @@ class BriefcaseAdmin(admin.ModelAdmin):
         return self.readonly_fields
 
     def has_add_permission(self, request, *args, **kwargs):
-        return False
+        return True
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
@@ -260,6 +223,12 @@ class MyUserAdmin(UserAdmin):
     search_fields = ('email', 'username', 'name', 'lastname')
     ordering = ('email',)
     filter_horizontal = ()
+
+
+from django.contrib.admin.models import LogEntry, ADDITION
+
+LogEntry.objects.filter(action_flag=ADDITION)
+
 
 
 admin.site.register(User, MyUserAdmin)

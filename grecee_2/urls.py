@@ -24,10 +24,8 @@ from main.views import logout_user
 
 urlpatterns = [
     path('logout/', logout_user, name='logout'),
-
     path('admin/logout/', lambda request: redirect('/logout/', permanent=False)),
-    path('admin/', admin.site.urls),
-
+    path('admin/', admin.site.urls, name='admin'),
     path('', include('main.urls')),
 
     # re_path(r'^registration/?$', RegistrationAPIView.as_view(), name='user_registration'),

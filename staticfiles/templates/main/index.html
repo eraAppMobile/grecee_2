@@ -28,7 +28,8 @@
                     <li class="text-secondary" > Welcome, {{user.name}} &nbsp;
                         <a class="btn btn-sm btn-outline-secondary" href="/admin">Admin panel</a> &nbsp;
                         <a class="btn btn-sm btn-outline-secondary" href="{% url 'logout' %}">Logout</a>
-                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'start' %}">Home</a></li>
+
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'index' %}">Home</a></li>
                 {% else %}
                     <a class="btn btn-sm btn-outline-secondary" href="/admin">Sign in</a>
                 {% endif %}

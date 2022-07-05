@@ -1,21 +1,18 @@
 
-from datetime import datetime, timedelta
-
-from django.contrib.admin.models import LogEntry
-from django.contrib.contenttypes.models import ContentType
-from django.db.models.signals import pre_delete
-from django.dispatch.dispatcher import receiver
+from datetime import datetime
 
 import jwt as pyjwt
+from django.conf import settings
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin, User
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.core import validators
 from django.db import models
-from django.conf import settings
-from django.contrib.auth.models import User
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
 from django.utils.html import format_html
-from django.views import generic
-from rest_framework import request
 
 
 class Viq(models.Model):
@@ -83,7 +80,84 @@ class Viqinfo(models.Model):
         db_table = 'VIQinfo'
 
 
-    # переработать вопросы ( создать портфель вопросов, может включать разное кол-во ответов)
+class Inspectiontypes(models.Model):
+    inspectiontypeid = models.AutoField(db_column='InspectionTypeId', blank=True, primary_key=True)
+    inspectiontype = models.TextField(db_column='InspectionType', blank=True,
+                                          null=True)
+    inspectioncode = models.TextField(db_column='InspectionCode', blank=True,
+                                          null=True)
+    bitreport = models.TextField(db_column='bitReport', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'InspectionTypes'
+
+
+class Vessel(models.Model):
+    vesselname = models.TextField(db_column='VesselName', blank=True, null=True)  # Field name made lowercase.
+    vesselid = models.AutoField(db_column='VesselId', blank=True, primary_key=True)  # Field name made lowercase.
+    imo = models.TextField(db_column='IMO', blank=True, null=True)  # Field name made lowercase.
+    flag = models.TextField(db_column='FLAG', blank=True, null=True)  # Field name made lowercase.
+    deliverydate = models.TextField(db_column='DeliveryDate', blank=True, null=True)  # Field name made lowercase.
+    grosstonage = models.TextField(db_column='GrossTonage', blank=True, null=True)  # Field name made lowercase.
+    deadweight = models.TextField(db_column='DeadWeight', blank=True, null=True)  # Field name made lowercase.
+    locked = models.IntegerField(db_column='Locked', blank=True, null=True)  # Field name made lowercase.
+    fleetid = models.IntegerField(db_column='FleetId', blank=True, null=True)  # Field name made lowercase.
+    vesselcode = models.TextField(db_column='VesselCode', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'Vessel'
+
+
+class Inspectionsource(models.Model):
+    inspectionsourceid = models.AutoField(db_column='InspectionSourceId', blank=True, primary_key=True)  # Field name made lowercase.
+    majorocimfid = models.TextField(db_column='MajorOCIMFId', blank=True, null=True)  # Field name made lowercase.
+    sourcename = models.TextField(db_column='SourceName', blank=True, null=True)  # Field name made lowercase.
+    sourcecode = models.TextField(db_column='SourceCode', blank=True, null=True)  # Field name made lowercase.
+    countrycode = models.TextField(db_column='CountryCode', blank=True, null=True)  # Field name made lowercase.
+    usedid = models.TextField(db_column='UsedId', blank=True, null=True)  # Field name made lowercase.
+    typecode = models.TextField(db_column='TypeCode', blank=True, null=True)  # Field name made lowercase.
+    printcode = models.TextField(db_column='PrintCode', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'InspectionSource'
+
+
+class Vettinginfo(models.Model):
+    inspectorname = models.TextField(db_column='InspectorName', blank=True, null=True)  # Field name made lowercase.
+    inspectorsirname = models.TextField(db_column='InspectorSirName', blank=True, null=True)  # Field name made lowercase.
+    port = models.TextField(db_column='Port', blank=True, null=True)  # Field name made lowercase.
+    country = models.TextField(db_column='Country', blank=True, null=True)  # Field name made lowercase.
+    vetdate = models.TextField(db_column='VetDate', blank=True, null=True)  # Field name made lowercase.
+    vettime = models.TextField(db_column='VetTime', blank=True, null=True)  # Field name made lowercase.
+    password = models.TextField(db_column='Password', blank=True, null=True)  # Field name made lowercase.
+    comments = models.TextField(db_column='Comments', blank=True, null=True)  # Field name made lowercase.
+    vesselname = models.TextField(db_column='VesselName', blank=True, null=True)  # Field name made lowercase.
+    vettingcode = models.TextField(db_column='VettingCode', blank=True, null=True)  # Field name made lowercase.
+    vetid = models.AutoField(db_column='VetId', blank=True, primary_key=True)  # Field name made lowercase.
+    qid = models.IntegerField(db_column='QId', blank=True, null=True)  # Field name made lowercase.
+    vetgui = models.TextField(db_column='VetGUI', blank=True, null=True)  # Field name made lowercase.
+    inspectiontypeid = models.IntegerField(db_column='InspectionTypeId', blank=True, null=True)  # Field name made lowercase.
+    vesselid = models.IntegerField(db_column='VesselId', blank=True, null=True)  # Field name made lowercase.
+    countryid = models.TextField(db_column='CountryId', blank=True, null=True)  # Field name made lowercase.
+    portid = models.TextField(db_column='PortId', blank=True, null=True)  # Field name made lowercase.
+    companyrepresentativename = models.TextField(db_column='CompanyRepresentativeName', blank=True, null=True)  # Field name made lowercase.
+    registrationdate = models.TextField(db_column='RegistrationDate', blank=True, null=True)  # Field name made lowercase.
+    majorid = models.TextField(db_column='MajorId', blank=True, null=True)  # Field name made lowercase.
+    registername = models.TextField(db_column='RegisterName', blank=True, null=True)  # Field name made lowercase.
+    answered = models.IntegerField(db_column='Answered', blank=True, null=True)  # Field name made lowercase.
+    negative = models.TextField(db_column='Negative', blank=True, null=True)  # Field name made lowercase.
+    positive = models.TextField(db_column='Positive', blank=True, null=True)  # Field name made lowercase.
+    sourceid = models.TextField(db_column='SourceId', blank=True, null=True)  # Field name made lowercase.
+    userid = models.TextField(db_column='UserId', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'VettingInfo'
+
+
 class Answer(models.Model):
     answer = models.IntegerField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
@@ -239,22 +313,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token
-
-
-# @property
-#     def _generate_jwt_token(self):
-#         """
-#         Создает веб-токен JSON, в котором хранится идентификатор
-#         этого пользователя и срок его действия
-#         составляет 60 дней в будущем.
-#         """
-#         dt = datetime.now() + timedelta(days=660)
-#
-#         token = pyjwt.encode({
-#             'id': self.pk,
-#             'email': self.email
-#
-#         }, settings.SECRET_KEY, algorithm='HS256')
-#
-#         return token
 

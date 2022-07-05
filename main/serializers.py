@@ -1,16 +1,73 @@
-
+from collections import OrderedDict
+from operator import itemgetter
 
 from django.contrib.auth import authenticate
+from rest_framework.validators import UniqueTogetherValidator
 
-from main.models import Answer
+from main.models import Answer, Viqinfo, Vessel, Inspectiontypes, Inspectionsource, Vettinginfo
 
 from rest_framework import serializers
+
+
+class InspectionTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Inspectiontypes
+        fields = ('inspectiontype',)
+
+    def to_representation(self, data):
+        data = super(InspectionTypeSerializer, self).to_representation(data)
+        for obj, (key, value) in enumerate(data.items()):
+            return value.strip()
+
+
+class VesselSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vessel
+        fields = ('vesselname',)
+
+    def to_representation(self, data):
+        data = super(VesselSerializer, self).to_representation(data)
+        for obj, (key, value) in enumerate(data.items()):
+            return value.strip()
+
+
+class PortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vettinginfo
+        fields = ('port',)
+
+
+    def to_representation(self, data):
+        data = super(PortSerializer, self).to_representation(data)
+        for obj, (key, value) in enumerate(data.items()):
+            return value.title()
+
+
+class InspectionSourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Inspectionsource
+        fields = ('sourcename',)
+
+    def to_representation(self, data):
+        data = super(InspectionSourceSerializer, self).to_representation(data)
+        for obj, (key, value) in enumerate(data.items()):
+            return value.strip()
+
+
+class BriefcaseSerializer(serializers.Serializer):
+    inspectiontype = InspectionTypeSerializer(read_only=True, many=True)
+    vessel = VesselSerializer(read_only=True, many=True)
+    sourcename = InspectionSourceSerializer(read_only=True, many=True)
+    port = PortSerializer(read_only=True, many=True)
+
+
+
 
 
 class AnswerMVPSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ('InspectorName',
+        fields = (
                     'answer',
                     'comment',
                     'date_of_creation',
@@ -19,6 +76,18 @@ class AnswerMVPSerializer(serializers.ModelSerializer):
                     'categoryid',
                     'origin',
                     'categorynewid')
+
+
+class ChaptersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Viqinfo
+        fields = (
+                    'qid',
+                    'title',
+                    )
+
+
+
 
 
 class LoginSerializer(serializers.Serializer):
@@ -93,5 +162,3 @@ class LoginSerializer(serializers.Serializer):
 #
 #     def create(self, validated_data):
 #         return User.objects.create_user(**validated_data)
-
-

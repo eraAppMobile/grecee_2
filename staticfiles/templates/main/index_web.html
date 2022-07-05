@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Ship inspection">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="ie=edge" http-equiv="x-ua-compatible">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'media/web/assets/css/style.min.css' %}">
+  <title>Inspection</title>
+</head>
+
+<body>
+  <div class="page" style="background-image: url('{% static '/media/web/assets/img/jpg/bg.jpg'%}')">
+    <header class="header" id="header">
+      <div class="container">
+        <div class="header__inner">
+          <div class="logo"><img src="{% static 'media/web/assets/img/svg/logo2.svg' %}" width="540" height="100" alt=""></div>
+        </div>
+      </div>
+    </header>
+    <main class="content">
+      <div class="container">
+        <div class="content__inner">
+          <form class="form" id="form-inspection" method="POST" name="inspection">
+            <!--Briefcases-->
+            <div class="form__tab" data-tab="briefcases">
+              <div class="form__header">
+                <button class="form__header-button form__header-button--next" type="button" data-tab-target="answers">Answers</button>
+                <div class="form__title">
+                  <p>Briefcases</p>
+                </div>
+              </div>
+              <div class="form__inner">
+                <ul class="form__cases" data-tab-target="categories">
+                  <li>
+                    <div class="form__cases-img"><img src="{% static 'media/web/assets/img/svg/case.svg'%} " with="130" height="130" alt=""></div>
+                    <div class="form__cases-content">
+                      <div class="form__cases-header">
+                        <p class="form__cases-header-title">Kourus</p>
+                        <div class="form__text form__text--sm">
+                          <p>15.04.2022</p>
+                        </div>
+                      </div>
+                      <div class="form__cases-descrip">
+                        <p class="form__cases-city">Shenzhen</p>
+                        <div class="form__text">
+                          <p>Site Visit</p>
+                          <p>Administration Nacional de Combustibles Alcohol y Portland (ACAP)</p>
+                        </div>
+                        <div class="form__cases-test"><span>Test:&nbsp;</span>
+                          <div class="form__text">
+                            <p>do not used</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="form__cases-img"><img src=" {% static 'media/web/assets/img/svg/case.svg' %}" with="130" height="130" alt=""></div>
+                    <div class="form__cases-content">
+                      <div class="form__cases-header">
+                        <p class="form__cases-header-title">Kourus</p>
+                        <div class="form__text form__text--sm">
+                          <p>15.04.2022</p>
+                        </div>
+                      </div>
+                      <div class="form__cases-descrip">
+                        <p class="form__cases-city">Shenzhen</p>
+                        <div class="form__text">
+                          <p>Site Visit</p>
+                          <p>Administration Nacional de Combustibles Alcohol y Portland (ACAP)</p>
+                        </div>
+                        <div class="form__cases-test"><span>Test:&nbsp;</span>
+                          <div class="form__text">
+                            <p>do not used</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="form__bot">
+                <button class="form__button form__button--secondary" type="button" data-tab-target="briefcases-add">+ Add</button>
+                <button class="form__button form__button--circle" type="button"></button>
+              </div>
+            </div>
+            <!--Briefcases-add-->
+            <div class="form__tab" data-tab="briefcases-add">
+              <div class="form__header">
+                <button class="form__header-button form__header-button--prev" type="button" data-tab-target="briefcases">Briefcases</button>
+                <div class="form__title">
+                  <p>Add briefcase</p>
+                </div>
+              </div>
+              <div class="form__inner">
+                <div class="form__control form__select" data-form-dropdown>
+                  <div class="form__options-container" data-form-dropdown-container>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="1">dromeas
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="2">estia
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="3">evridiki
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="4">fidias
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="5">gea
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="6">kouros
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="7">kriton
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="8">lysias
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="9">dromeas
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="1">dromeas
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="2">estia
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="3">evridiki
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="4">fidias
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="vessel[]" value="5">gea
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form__option-selected form__input" data-form-dropdown-selected><img src="{% static  'media/web/assets/img/svg/vessel.svg'%}" width="40" height="40" alt=""><span>Vessels</span></div>
+                </div>
+                <div class="form__control form__select" data-form-dropdown>
+                  <div class="form__options-container" data-form-dropdown-container>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="1">dromeas
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="2">estia
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="3">evridiki
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="4">fidias
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="5">gea
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="6">kouros
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="7">kriton
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="8">lysias
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="9">dromeas
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="1">dromeas
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="2">estia
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="3">evridiki
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="4">fidias
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="port[]" value="5">gea
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form__option-selected form__input" data-form-dropdown-selected><img src="{% static 'media/web/assets/img/svg/anchor.svg'%}" width="40" height="40" alt=""><span>Port</span></div>
+                </div>
+                <div class="form__control form__select" data-form-dropdown>
+                  <div class="form__options-container" data-form-dropdown-container>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="inspection[]" value="1">audit
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="inspection[]" value="2">vetting
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="inspection[]" value="3">attendance
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="inspection[]" value="4">dry dock
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="inspection[]" value="5">site visit
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="inspection[]" value="6">terminal inspection
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="inspection[]" value="7">third party inpection
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="inspection[]" value="8">start tanker inspection
+                      </label>
+                    </div>
+                    <div class="form__option" data-form-dropdown-option>
+                      <label>
+                        <input type="radio" name="inspection[]" value="9">multytype inspection
+                      </label>
+                    </div>
+
+                  </div>
+                  <div class="form__option-selected form__input" data-form-dropdown-selected><img src="{% static 'media/web/assets/img/svg/inspection.svg'%}" width="40" height="40" alt=""><span>Type of inspection</span></div>
+                </div>
+              </div>
+              <div class="form__control">
+                <input class="form__input" type="text" name="inspection-name" placeholder="Inspection name" required>
+              </div>
+              <div class="form__bot form__bot--justify-end">
+                <button class="form__button form__button--media-wide" type="button" data-tab-target="briefcases">Continue</button>
+              </div>
+            </div>
+            <!--Categories-->
+            <div class="form__tab" data-tab="categories">
+              <div class="form__header">
+                <button class="form__header-button form__header-button--next" type="button" data-tab-target="notes">Notes</button>
+                <button class="form__header-button form__header-button--prev" type="button" data-tab-target="briefcases">Briefcases</button>
+                <div class="form__title">
+                  <p>Categories</p>
+                </div>
+              </div>
+              <div class="form__inner">
+                <ul class="form__items" data-tab-target="questions">
+                  <li>Machinery status</li>
+                  <li>Steering Compartment</li>
+                  <li>Pilotage</li>
+                  <li>Accommodation</li>
+                </ul>
+              </div>
+            </div>
+            <!--Questions-->
+            <div class="form__tab" data-tab="questions">
+              <div class="form__header form__header--margin-sm">
+                <button class="form__header-button form__header-button--prev" type="button" data-tab-target="categories">Categories</button>
+                <button class="form__header-button form__header-button--next" type="button" data-tab-target="notes">Notes</button>
+              </div>
+              <div class="form__title form__title--margin-sm">
+                <p>Machinery status</p>
+              </div>
+              <div class="form__inner">
+                <ul class="form__items form__items--iconless">
+                  <li>
+                    <label class="form__checkbox-wrapper">
+                      <input class="form__checkbox" name="question" type="checkbox" hidden><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">Are switchboards free of significant earth faults?</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="form__checkbox-wrapper">
+                      <input class="form__checkbox" name="question" type="checkbox" hidden><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">Are the following, where applicable, all in good order and do they appear to be well maintained?</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="form__checkbox-wrapper">
+                      <input class="form__checkbox" name="question" type="checkbox" hidden><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">The main engine;</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="form__checkbox-wrapper">
+                      <input class="form__checkbox" name="question" type="checkbox" hidden><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">Auxiliary engines and generators, including shaft g and emergency generators where fitted.</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="form__checkbox-wrapper">
+                      <input class="form__checkbox" name="question" type="checkbox" hidden><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">Boilers, including waste heat and domestic boilers;</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="form__checkbox-wrapper">
+                      <input class="form__checkbox" name="question" type="checkbox" hidden><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">Compressors including main, instrument and emergency air compressors;</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="form__checkbox-wrapper">
+                      <input class="form__checkbox" name="question" type="checkbox" hidden><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">Compressors including main, instrument and emergency air compressors;</span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+              <div class="form__bot">
+                <button class="form__button form__button--secondary" type="button" data-tab-target="answers-info">Open questions ></button>
+                <button class="form__button form__button--circle" type="button"></button>
+              </div>
+            </div>
+            <!--Answers-->
+            <div class="form__tab" data-tab="answers">
+              <div class="form__header">
+                <button class="form__header-button form__header-button--prev" type="button" data-tab-target="briefcases">Briefcases</button>
+                <div class="form__title">
+                  <p>Answers</p>
+                </div>
+              </div>
+              <div class="form__inner">
+                <div class="form__select form__select--secondary" data-form-dropdown>
+                  <ul class="form__options-container" data-form-dropdown-container data-tab-target="answers-info">
+                    <li>Are the following, where applicable, all in good order and do they appear to be well maintained?</li>
+                    <li>The main engine;</li>
+                    <li>Auxiliary engines and generators, including shaft g and emergency generators where fitted.</li>
+                    <li>Boilers, including waste heat and domestic boilers;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                  </ul>
+                  <div class="form__option-selected form__input" data-form-dropdown-selected><span>Machinery status</span></div>
+                </div>
+                <div class="form__select form__select--secondary" data-form-dropdown>
+                  <ul class="form__options-container" data-form-dropdown-container data-tab-target="answers-info">
+                    <li>Are the following, where applicable, all in good order and do they appear to be well maintained?</li>
+                    <li>The main engine;</li>
+                    <li>Auxiliary engines and generators, including shaft g and emergency generators where fitted.</li>
+                    <li>Boilers, including waste heat and domestic boilers;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                  </ul>
+                  <div class="form__option-selected form__input" data-form-dropdown-selected><span>Steering Compartment</span></div>
+                </div>
+                <div class="form__select form__select--secondary" data-form-dropdown>
+                  <ul class="form__options-container" data-form-dropdown-container data-tab-target="answers-info">
+                    <li>Are the following, where applicable, all in good order and do they appear to be well maintained?</li>
+                    <li>The main engine;</li>
+                    <li>Auxiliary engines and generators, including shaft g and emergency generators where fitted.</li>
+                    <li>Boilers, including waste heat and domestic boilers;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                  </ul>
+                  <div class="form__option-selected form__input" data-form-dropdown-selected><span>Pilotage</span></div>
+                </div>
+                <div class="form__select form__select--secondary" data-form-dropdown>
+                  <ul class="form__options-container" data-form-dropdown-container data-tab-target="answers-info">
+                    <li>Are the following, where applicable, all in good order and do they appear to be well maintained?</li>
+                    <li>The main engine;</li>
+                    <li>Auxiliary engines and generators, including shaft g and emergency generators where fitted.</li>
+                    <li>Boilers, including waste heat and domestic boilers;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                  </ul>
+                  <div class="form__option-selected form__input" data-form-dropdown-selected><span>Accommodation</span></div>
+                </div>
+                <div class="form__select form__select--secondary" data-form-dropdown>
+                  <ul class="form__options-container" data-form-dropdown-container data-tab-target="answers-info">
+                    <li>Are the following, where applicable, all in good order and do they appear to be well maintained?</li>
+                    <li>The main engine;</li>
+                    <li>Auxiliary engines and generators, including shaft g and emergency generators where fitted.</li>
+                    <li>Boilers, including waste heat and domestic boilers;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                  </ul>
+                  <div class="form__option-selected form__input" data-form-dropdown-selected><span>Certification and Documentation</span></div>
+                </div>
+                <div class="form__select form__select--secondary" data-form-dropdown>
+                  <ul class="form__options-container" data-form-dropdown-container data-tab-target="answers-info">
+                    <li>Are the following, where applicable, all in good order and do they appear to be well maintained?</li>
+                    <li>The main engine;</li>
+                    <li>Auxiliary engines and generators, including shaft g and emergency generators where fitted.</li>
+                    <li>Boilers, including waste heat and domestic boilers;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                  </ul>
+                  <div class="form__option-selected form__input" data-form-dropdown-selected><span>Policies and Procedures</span></div>
+                </div>
+                <div class="form__select form__select--secondary" data-form-dropdown>
+                  <ul class="form__options-container" data-form-dropdown-container data-tab-target="answers-info">
+                    <li>Are the following, where applicable, all in good order and do they appear to be well maintained?</li>
+                    <li>The main engine;</li>
+                    <li>Auxiliary engines and generators, including shaft g and emergency generators where fitted.</li>
+                    <li>Boilers, including waste heat and domestic boilers;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                    <li>Compressors including main, instrument and emergency air compressors;</li>
+                  </ul>
+                  <div class="form__option-selected form__input" data-form-dropdown-selected><span>Stability ad Cargo Loading Limitations</span></div>
+                </div>
+              </div>
+              <div class="form__bot form__bot--justify-end">
+                <button class="form__button form__button--circle" type="button"></button>
+              </div>
+            </div>
+            <!--Answers-info-->
+            <div class="form__tab" data-tab="answers-info">
+              <div class="form__header">
+                <button class="form__header-button form__header-button--prev" type="button" data-tab-target="answers">Answers</button>
+                <button class="form__header-button form__header-button--next" type="button" data-tab-target="info">Information</button>
+              </div>
+              <div class="form__inner">
+                <p class="form__question">Are the following, where applicable, all in good order and do they appear to be well maintained?</p>
+                <div class="form__control">
+                  <input class="form__input" type="date" name="date" required>
+                </div>
+                <div class="form__control">
+                  <textarea class="form__input" name="message">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</textarea>
+                </div>
+                <div class="form__group">
+                  <div class="form__group form__group--col form__answer">
+                    <p class="form__answer-txt">Answer:</p>
+                    <label class="form__checkbox-wrapper">
+                      <input class="form__checkbox" name="answer" type="radio" hidden required><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">Yes</span>
+                    </label>
+                    <label class="form__checkbox-wrapper">
+                      <input class="form__checkbox" name="answer" type="radio" hidden required><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">No</span>
+                    </label>
+                  </div>
+                  <div class="form__group form__group--col form__buttons">
+                    <button class="form__button form__button--secondary" type="button" data-tab-target="notes">+ Add note</button>
+                    <label class="form__button form__button--secondary">
+                      <input class="form__input" type="file" multiple="multiple" accept=".png, .jpg, .jpeg .gif" hidden name="files"><span class="form__upload-button-txt">+ Add photo</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form__bot form__bot--justify-center">
+                <button class="form__button form__button--media-wide" type="button">Save</button>
+              </div>
+            </div>
+            <!--Answers-info-multi-->
+            <div class="form__tab" data-tab="answers-info-multi">
+              <div class="form__header">
+                <button class="form__header-button form__header-button--prev" type="button" data-tab-target="answers">Answers</button>
+                <button class="form__header-button form__header-button--next" type="button" data-tab-target="info">Information</button>
+              </div>
+              <div class="form__wrapper">
+                <div class="form__inner form__inner--margin-lg">
+                  <p class="form__question">Are the following, where applicable, all in good order and do they appear to be well maintained?</p>
+                  <div class="form__control">
+                    <input class="form__input" type="date" name="date" required>
+                  </div>
+                  <div class="form__control">
+                    <textarea class="form__input" name="message"></textarea>
+                  </div>
+                  <div class="form__group form__group--media-col">
+                    <div class="form__group form__group--row">
+                      <p class="form__answer-txt">Answer:</p>
+                      <label class="form__checkbox-wrapper">
+                        <input class="form__checkbox" name="answer" type="radio" hidden required><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">Yes</span>
+                      </label>
+                      <label class="form__checkbox-wrapper">
+                        <input class="form__checkbox" name="answer" type="radio" hidden required><span class="form__checkbox-styled"></span><span class="form__checkbox-txt">No</span>
+                      </label>
+                    </div>
+                    <div class="form__buttons">
+                      <button class="form__button form__button--media-wide" type="button">Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--Notes-->
+            <div class="form__tab" data-tab="notes">
+              <div class="form__header">
+                <button class="form__header-button form__header-button--prev" type="button" data-tab-target="categories">Categories</button>
+                <div class="form__title">
+                  <p>Notes</p>
+                </div>
+              </div>
+              <div class="form__inner">
+                <ul class="form__items form__notes" data-tab-target="notes-add">
+                  <li>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt odio corrupti eligendi fugiat cupiditate fugit numquam, quod tempore, quidem cum in esse, nulla laudantium dolor aspernatur assumenda quia odit perferendis.</p>
+                  </li>
+                  <li>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci delectus sunt atque voluptatum cumque odit sequi placeat id saepe, ex explicabo ab porro quam dolorem dolores temporibus itaque rem libero.</p>
+                  </li>
+                  <li>
+                    <p>The main engine</p>
+                  </li>
+                </ul>
+              </div>
+              <div class="form__bot">
+                <button class="form__button form__button--secondary" type="button" data-tab-target="notes-add">+ Add</button>
+                <button class="form__button form__button--circle" type="button"></button>
+              </div>
+            </div>
+            <!--Notes-add-->
+            <div class="form__tab" data-tab="notes-add">
+              <div class="form__header">
+                <button class="form__header-button form__header-button--prev" type="button" data-tab-target="notes">Notes</button>
+                <div class="form__title">
+                  <p>New note</p>
+                </div>
+              </div>
+              <div class="form__inner">
+                <div class="form__control">
+                  <textarea class="form__input" name="message">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</textarea>
+                </div>
+              </div>
+              <div class="form__bot form__bot--justify-center">
+                <button class="form__button form__button--media-wide" type="button">Save</button>
+              </div>
+            </div>
+            <!--Info-->
+            <div class="form__tab" data-tab="info">
+              <div class="form__header">
+                <button class="form__header-button form__header-button--prev" type="button" data-tab-target="answers-info">Question</button>
+                <div class="form__title">
+                  <p>Information</p>
+                </div>
+              </div>
+              <div class="form__inner">
+                <div class="form__text">
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="{% static 'media/web/assets/js/main.js'%}"></script>
+</body>
+
+</html>

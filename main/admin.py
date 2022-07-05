@@ -49,14 +49,17 @@ class AnswerInline(admin.TabularInline):
         return self.readonly_fields
 
     def get_photo(self, obj):
-        if obj.images.all():
-            href_for_admin = []
-            for href in obj.images.all():
-                href_for_admin.append(
-                    format_html(f'<a href="{href}" target="_blank"><img src="{href} " width="50"/></a</a>')
-                )
-            return format_html('\n'.join(href_for_admin))
-        return 'no photography'
+        images = obj.images.all()
+        if not images:
+            return 'no photo'
+        # if obj.images.all():
+        href_for_admin = []
+        for href in obj.images.all():
+            href_for_admin.append(
+                format_html(f'<a href="{href}" target="_blank"><img src="{href} " width="50"/></a</a>')
+            )
+        return format_html('\n'.join(href_for_admin))
+        # return 'no photography'
     get_photo.short_description = 'Photo'
 
     def has_add_permission(self, request, *args, **kwargs):
@@ -71,7 +74,7 @@ def export_to_csv(modeladmin, request, queryset):
     fields1 = [field for field in opts_answer]
     list_chapters = [field.name.title() for field in fields]
     list_answer = [field.name.title() for field in fields1]
-    list_csv = [*list_chapters, *list_answer]
+    list_csv = list_chapters + list_answer
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=%s.csv' % str(opts).replace('.', '_')

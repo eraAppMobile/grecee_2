@@ -16,18 +16,17 @@ class BriefCase(APIView):
     Класс для просмотра сохраненных брифкейсов, вместе с ответами и фотографиями (GET),
     и POST запрос для создания брифкейсов вместе с ответами и фотографиями если они есть
     """
-
     def get(self, request):
         result = BriefcaseBD().get_briefcase()
         return Response(result.data)
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        result = BriefCaseDataBaseSerializer(data=data, many=True)
+        result = BriefCaseDataBaseSerializer(data=data, many=True, context={'user_id': request.user})
         if result.is_valid(raise_exception=True):
             result.save()
-            return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'status': 'Success!'}, status=status.HTTP_200_OK)
+        return Response({'status': 'Error!'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class Question(APIView):
@@ -52,7 +51,6 @@ class AnswerMVP(APIView):
 
 class Chapters(APIView):
     """Список категорий"""
-
     def get(self, request):
         result = GetDataBase().get_chapters()
         if not result:
@@ -62,7 +60,6 @@ class Chapters(APIView):
 
 class InfoBriefCase(APIView):
     """Список информации для создания брифкейса (порт. название корабля, тип инспеции, источник инспекции"""
-
     def get(self, request):
         result = GetDataBase().get_info_briefcase()
         if not result:

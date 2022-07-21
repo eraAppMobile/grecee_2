@@ -1,10 +1,10 @@
-import base64
-import io
+from venv import create
 
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.auth import authenticate
+from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from rest_framework import serializers
-from PIL import Image as Img
 
 from main.models import Answer, Viqinfo, Vessel, Inspectiontypes, Inspectionsource, Vettinginfo, Questionpoolnew, \
     Briefcase, Image
@@ -182,7 +182,7 @@ class Base64ImageField(serializers.ImageField):
             except TypeError:
                 self.fail('invalid_image')
             # Generate file name:
-            file_name = str(uuid.uuid4())[:12] # 12 characters are more than enough.
+            file_name = str(uuid.uuid4())[:12]  # 12 characters are more than enough.
             # Get the file name extension:
             file_extension = self.get_file_extension(file_name, decoded_file)
             complete_file_name = "%s.%s" % (file_name, file_extension, )
@@ -242,9 +242,10 @@ class BriefCaseDataBaseSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
+        user = self.context['user_id']
 
         answers = validated_data.pop('briefcase')
-        name = "test name"
+        name = user.lastname
         new_briefcase = Briefcase.objects.create(**validated_data)
         for answer in answers:
             images = answer.pop('images')
@@ -253,15 +254,14 @@ class BriefCaseDataBaseSerializer(serializers.ModelSerializer):
             for image in images:
                 for order_dict in image.items():
                     image_var = order_dict[1].open().read()
-                    image_answer = base64.b64decode(image_var)
-                    image = Img.open(io.BytesIO(image_answer))
-                    image_io = io.BytesIO()
-                    image.save(image_io, format='png', name=name, quality=80)
-                    image_bd = ContentFile(image.getvalue(), name=name)
+                    Image.objects.create(image=ContentFile(image_var, name='' + name), answer_image=new_answer)
 
-                    Image.objects.create(image=image, answer_image=new_answer)
-
-
+        LogEntry.objects.log_action(
+            user_id=user.id,
+            content_type_id=ContentType.objects.get_for_model(Briefcase).pk,
+            object_id=new_briefcase.id,
+            object_repr=new_briefcase.name_case,
+            action_flag=ADDITION if create else CHANGE)
         return new_briefcase
 
 

@@ -4,8 +4,6 @@ from venv import create
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
-from rest_framework import status
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from PIL import Image as Img
@@ -13,45 +11,8 @@ import io
 
 from main.models import Viqinfo, Viq, Questionpoolnew, Briefcase, Answer, Image, Inspectiontypes, Inspectionsource,\
     Vessel, Vettinginfo
-from main.serializers import AnswerMVPSerializer, ChaptersSerializer, VesselSerializer, BriefcaseSerializer
-
-
-class InfoBriefcase(APIView):
-    """
-    Информация для селектов при создании и заполнении брифкейса
-    """
-    def get(self, request):
-
-        #список судов
-        vessel = []
-        for obj_vessel in Vessel.objects.all():
-            vessel.append(obj_vessel.vesselname.strip())
-
-        #список вида инспеkции
-        inspection_type =[]
-        for obj_inspectiontype in Inspectiontypes.objects.all():
-            inspection_type.append(obj_inspectiontype.inspectiontype)
-
-        # список ресурсов инспекции
-        instection_source = []
-        for obj_inspectionsource in Inspectionsource.objects.all():
-            instection_source.append(obj_inspectionsource.sourcename)
-
-        #список портов с сортировкой повторяющихся
-        port_sorted = []
-        for obj_ports in Vettinginfo.objects.all():
-            if obj_ports.port != None:
-                port_symbol_lower=obj_ports.port.lower()
-                if port_symbol_lower not in port_sorted:
-                    port_sorted.append(port_symbol_lower)
-        ports = []
-        for el in port_sorted:
-            p=el.title()
-            ports.append(p)
-        listing = {'vessel':vessel, "port":ports , "inspection_type":inspection_type,
-                        "inspecstion_source":instection_source}
-
-        return Response(listing)
+from main.serializers import AnswerMVPSerializer, ChaptersSerializer, BriefcaseSerializer, QuestionListSerializer, \
+    BriefCaseDataBaseSerializer
 
 
 class GetDataBase:
@@ -69,12 +30,12 @@ class GetDataBase:
     # отправка информации для создания брифкейса,
     # получение списка портов, кораблей, типа инспекции, источника инспекции
     def get_info_briefcase(self):
-        listing = {}
-        listing['vessel'] = Vessel.objects.all()
-        listing['inspectiontype'] = Inspectiontypes.objects.all()
-        listing['sourcename'] = Inspectionsource.objects.all()
-        listing['port'] = Vettinginfo.objects.exclude(port__isnull=True)
-        result = BriefcaseSerializer(listing)
+        dictionary_lists = {}
+        dictionary_lists['vessel'] = Vessel.objects.all()
+        dictionary_lists['inspectiontype'] = Inspectiontypes.objects.all()
+        dictionary_lists['sourcename'] = Inspectionsource.objects.all()
+        dictionary_lists['port'] = Vettinginfo.objects.exclude(port__isnull=True)
+        result = BriefcaseSerializer(dictionary_lists)
         return result
 
     # получение глав вопросов
@@ -85,8 +46,16 @@ class GetDataBase:
         return result
 
     #получение вопросов выбранной категории, требуется qid
-    def get_question_chapters(self):
-        pass
+    #!!! разобраться с нулевыми значениями!!!!
+    def get_question_chapters(self, data):
+        list_object_question = []
+        dict_question_object_for_serializer = {}
+        for obj in Viq.objects.filter(qid=data):
+            list_object_question.append(Questionpoolnew.objects.filter(questionid=obj.objectid).first())
+        dict_question_object_for_serializer['question'] = list_object_question
+        result = QuestionListSerializer(dict_question_object_for_serializer)
+
+        return result
 
 
 class BriefcaseBD:
@@ -96,28 +65,10 @@ class BriefcaseBD:
     def save_briefcase(self):
         pass
 
-
-class QuestionChapters(APIView):
-    """Список вопросов категории. ДЛя получения необходим qid"""
-
-    def post(self, request):
-        data = request.data
-        list_question = []
-        # question_ids = Viq.objects.filter(qid=data['qid']).values_list('objectid')
-        for obj in Viq.objects.filter(qid=data['qid']):
-            for quest in Questionpoolnew.objects.filter(questionid=obj.objectid):
-                list_dict = {
-                    'questionid': quest.questionid,
-                    'questioncode': quest.questioncode,
-                    'question': quest.question,
-                    'comment': quest.comment,
-                    'categoryid': quest.categoryid,
-                    'origin': quest.origin,
-                    'categorynewid': quest.categorynewid,
-                }
-                list_question.append(list_dict)
-        return Response(list_question)
-
+    def get_briefcase(self):
+        queryset = Briefcase.objects.all()
+        data = BriefCaseDataBaseSerializer(queryset, many=True)
+        return data
 
 class Answers (APIView):
     """ создание и сохранение заполненного брифкейса клиентом"""
@@ -126,6 +77,7 @@ class Answers (APIView):
         data = request.data
         name = data.get("briefcase")['InspectorName']
         new_briefcase = Briefcase.objects.create(
+
             name_case=(data.get("briefcase")['name_case']).capitalize(),
             InspectorName=data.get("briefcase")['InspectorName'],
             InspectionTypes=data.get("briefcase")['InspectionTypes'],
@@ -136,7 +88,7 @@ class Answers (APIView):
         )
         for answer in data['answer'].values():
             new_answer = Answer.objects.create(
-                briefcase=new_briefcase,
+                briefcase_answer=new_briefcase,
                 answer=answer['answer'],  # заменить на ответы с таблицы
                 comment=answer['comment'],
                 questionid=answer['questionid'],
@@ -154,9 +106,9 @@ class Answers (APIView):
                     image = Img.open(io.BytesIO(image_answer))
                     image_io = io.BytesIO()
                     image.save(image_io, format='png', name=name, quality=80)
-                    image_bd = ContentFile(image_io.getvalue(), name=name)
+                    image_bd = ContentFile(image.getvalue(), name=name)
                     Image.objects.create(
-                        answer=new_answer,
+                        answer_image=new_answer,
                         image=image_bd,
                     )
                 continue

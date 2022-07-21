@@ -3,21 +3,20 @@ import datetime
 
 from django.contrib import admin
 from django.http import HttpResponse
+from django.contrib.admin.models import LogEntry, ADDITION
 
 from django.utils.html import format_html
-# Register your models here.
+
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 from django import forms
-from rest_framework import status
 
 from main.models import Answer, User, Image, Briefcase
 
 admin.site.site_header = 'Era App development. Beta 0.1 for Lonia'
 
 
-# @admin.register(Image)
 class GalleryInline(admin.ModelAdmin):
     model = Image
     readonly_fields = ['image_img']
@@ -32,20 +31,21 @@ class AnswerInline(admin.TabularInline):
     save_as = True
     can_delete = False
     actions = ["export_as_csv"]
+
     def get_readonly_fields(self, request, obj=None):
         if obj:  # when editing an object
             return [
-                    'question',
-                    'answer',
-                    'comment',
-                    'date_of_creation',
-                    'questionid',
-                    'questioncode',
-                    'categoryid',
-                    'origin',
-                    'categorynewid',
-                    'get_photo',
-                    ]
+                'question',
+                'answer',
+                'comment',
+                'date_of_creation',
+                'questionid',
+                'questioncode',
+                'categoryid',
+                'origin',
+                'categorynewid',
+                'get_photo',
+            ]
         return self.readonly_fields
 
     def get_photo(self, obj):
@@ -60,6 +60,7 @@ class AnswerInline(admin.TabularInline):
             )
         return format_html('\n'.join(href_for_admin))
         # return 'no photography'
+
     get_photo.short_description = 'Photo'
 
     def has_add_permission(self, request, *args, **kwargs):
@@ -67,7 +68,6 @@ class AnswerInline(admin.TabularInline):
 
 
 def export_to_csv(modeladmin, request, queryset):
-
     opts = modeladmin.model._meta
     opts_answer = Answer._meta.get_fields()
     fields = [field for field in opts.get_fields()]
@@ -106,7 +106,7 @@ def export_to_csv(modeladmin, request, queryset):
                             element_answer = element_answer.strftime('%d.%m.%Y')
                         data_lite.append(element_answer)
 
-                    writer.writerow(data_row+data_lite)
+                    writer.writerow(data_row + data_lite)
 
             except AttributeError:
                 continue
@@ -120,6 +120,19 @@ class BriefcaseAdmin(admin.ModelAdmin):
     inlines = [AnswerInline]
     list_display = ['name_case', 'date_of_creation', 'InspectorName', 'vessel', 'port', ]
     fields = [
+        'name_case',
+        'InspectorName',
+        'InspectionTypes',
+        'InspectionSource',
+        'vessel',
+        'port',
+        'date_of_creation',
+        'date_in_vessel',
+    ]
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # when editing an object
+            return [
                 'name_case',
                 'InspectorName',
                 'InspectionTypes',
@@ -128,20 +141,7 @@ class BriefcaseAdmin(admin.ModelAdmin):
                 'port',
                 'date_of_creation',
                 'date_in_vessel',
-                ]
-
-    def get_readonly_fields(self, request, obj=None):
-        if obj:  # when editing an object
-            return [
-                    'name_case',
-                    'InspectorName',
-                    'InspectionTypes',
-                    'InspectionSource',
-                    'vessel',
-                    'port',
-                    'date_of_creation',
-                    'date_in_vessel',
-                    ]
+            ]
         return self.readonly_fields
 
     def has_add_permission(self, request, *args, **kwargs):
@@ -153,7 +153,7 @@ class BriefcaseAdmin(admin.ModelAdmin):
         extra_context['show_save_and_continue'] = False
         extra_context['show_save'] = False
         return super(BriefcaseAdmin, self).change_view(request, object_id,
-                                                     form_url, extra_context=extra_context)
+                                                       form_url, extra_context=extra_context)
 
 
 class UserCreationForm(forms.ModelForm):
@@ -228,11 +228,7 @@ class MyUserAdmin(UserAdmin):
     filter_horizontal = ()
 
 
-from django.contrib.admin.models import LogEntry, ADDITION
-
 LogEntry.objects.filter(action_flag=ADDITION)
-
-
 
 admin.site.register(User, MyUserAdmin)
 

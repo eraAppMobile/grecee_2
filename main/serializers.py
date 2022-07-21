@@ -1,12 +1,13 @@
-from collections import OrderedDict
-from operator import itemgetter
+import base64
+import io
 
 from django.contrib.auth import authenticate
-from rest_framework.validators import UniqueTogetherValidator
-
-from main.models import Answer, Viqinfo, Vessel, Inspectiontypes, Inspectionsource, Vettinginfo
-
+from django.core.files.base import ContentFile
 from rest_framework import serializers
+from PIL import Image as Img
+
+from main.models import Answer, Viqinfo, Vessel, Inspectiontypes, Inspectionsource, Vettinginfo, Questionpoolnew, \
+    Briefcase, Image
 
 
 class InspectionTypeSerializer(serializers.ModelSerializer):
@@ -36,7 +37,6 @@ class PortSerializer(serializers.ModelSerializer):
         model = Vettinginfo
         fields = ('port',)
 
-
     def to_representation(self, data):
         data = super(PortSerializer, self).to_representation(data)
         for obj, (key, value) in enumerate(data.items()):
@@ -59,9 +59,6 @@ class BriefcaseSerializer(serializers.Serializer):
     vessel = VesselSerializer(read_only=True, many=True)
     sourcename = InspectionSourceSerializer(read_only=True, many=True)
     port = PortSerializer(read_only=True, many=True)
-
-
-
 
 
 class AnswerMVPSerializer(serializers.ModelSerializer):
@@ -87,14 +84,29 @@ class ChaptersSerializer(serializers.ModelSerializer):
                     )
 
 
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Questionpoolnew
+        fields = (
+            'questionid',
+            'questioncode',
+            'question',
+            'comment',
+            'categoryid',
+            'origin',
+            'categorynewid'
+        )
 
+
+class QuestionListSerializer(serializers.Serializer):
+    question = QuestionSerializer(read_only=True, many=True)
 
 
 class LoginSerializer(serializers.Serializer):
     """
     Authenticates an existing user.
     Email and password are required.
-    Returns a JSON web token.
+    Returns a JSON web token and Fullname
     """
     email = serializers.EmailField(write_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
@@ -102,6 +114,8 @@ class LoginSerializer(serializers.Serializer):
     # Ignore these fields if they are included in the request.
     username = serializers.CharField(max_length=255, read_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
+    full_name = serializers.CharField(max_length=255, read_only=True)
+
 
     def validate(self, data):
         """
@@ -132,12 +146,126 @@ class LoginSerializer(serializers.Serializer):
                 'This user has been deactivated.'
             )
 
+        full_name = f"{user.name or ''} {user.lastname or ''}".strip()
+
         return {
-            'token': user.token,
-        }
+                'token': user.token,
+                'full_name': full_name,
+            }
 
 
+class Base64ImageField(serializers.ImageField):
+    """
+    A Django REST framework field for handling image-uploads through raw post data.
+    It uses base64 for encoding and decoding the contents of the file.
 
+    Heavily based on
+    https://github.com/tomchristie/django-rest-framework/pull/1268
+
+    Updated for Django REST framework 3.
+    """
+
+    def to_internal_value(self, data):
+        from django.core.files.base import ContentFile
+        import base64
+        import six
+        import uuid
+        # Check if this is a base64 string
+        if isinstance(data, six.string_types):
+            # Check if the base64 string is in the "data:" format
+            if 'data:' in data and ';base64,' in data:
+                # Break out the header from the base64 content
+                header, data = data.split(';base64,')
+            # Try to decode the file. Return validation error if it fails.
+            try:
+                decoded_file = base64.b64decode(data)
+            except TypeError:
+                self.fail('invalid_image')
+            # Generate file name:
+            file_name = str(uuid.uuid4())[:12] # 12 characters are more than enough.
+            # Get the file name extension:
+            file_extension = self.get_file_extension(file_name, decoded_file)
+            complete_file_name = "%s.%s" % (file_name, file_extension, )
+            data = ContentFile(decoded_file, name=complete_file_name)
+        return super(Base64ImageField, self).to_internal_value(data)
+
+    def get_file_extension(self, file_name, decoded_file):
+        import imghdr
+
+        extension = imghdr.what(file_name, decoded_file)
+        extension = "png" if extension == "png" else extension
+
+        return extension
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    image = Base64ImageField(max_length=None, use_url=True)
+
+    class Meta:
+        model = Image
+        fields = ('image',)
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, required=False)
+
+    class Meta:
+        model = Answer
+        fields = (
+            'answer',
+            'comment',
+            'questionid',
+            'question',
+            'questioncode',
+            'categoryid',
+            'categorynewid',
+            'origin',
+            'images',
+        )
+
+
+class BriefCaseDataBaseSerializer(serializers.ModelSerializer):
+    briefcase = AnswerSerializer(many=True, required=False)
+
+    class Meta:
+        model = Briefcase
+        fields = (
+            'name_case',
+            'InspectorName',
+            'InspectionTypes',
+            'InspectionSource',
+            'vessel',
+            'port',
+            'date_in_vessel',
+            'briefcase',
+        )
+
+
+    def create(self, validated_data):
+
+        answers = validated_data.pop('briefcase')
+        name = "test name"
+        new_briefcase = Briefcase.objects.create(**validated_data)
+        for answer in answers:
+            images = answer.pop('images')
+            new_answer = Answer.objects.create(**answer, briefcase_answer=new_briefcase)
+
+            for image in images:
+                for order_dict in image.items():
+                    image_var = order_dict[1].open().read()
+                    image_answer = base64.b64decode(image_var)
+                    image = Img.open(io.BytesIO(image_answer))
+                    image_io = io.BytesIO()
+                    image.save(image_io, format='png', name=name, quality=80)
+                    image_bd = ContentFile(image.getvalue(), name=name)
+
+                    Image.objects.create(image=image, answer_image=new_answer)
+
+
+        return new_briefcase
+
+
+#регистрация юзеров тут скрыта
 # class RegistrationSerializer(serializers.ModelSerializer):
 #     """
 #     Creates a new user.

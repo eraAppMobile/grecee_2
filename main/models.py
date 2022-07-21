@@ -1,4 +1,3 @@
-
 from datetime import datetime
 
 import jwt as pyjwt
@@ -168,24 +167,23 @@ class Answer(models.Model):
     categoryid = models.IntegerField(blank=True, null=True)
     origin = models.TextField(blank=True, null=True)
     categorynewid = models.TextField(blank=True, null=True)
-    briefcase = models.ForeignKey('Briefcase', on_delete=models.CASCADE,
-                                  related_name='briefcase', blank=True, null=True)
+    briefcase_answer = models.ForeignKey('Briefcase', on_delete=models.CASCADE,
+                                         related_name='briefcase', blank=True, null=True)
 
     def __str__(self):
-        return self.questionid
+        return f'question id:{self.questionid}, question: {self.question}'
 
 
 def user_directory_path(instance , name):
     # путь, куда будет осуществлена загрузка MEDIA_ROOT/user_username
     return 'Inspector_{0}/{1}/{2}'.format(
-        name, 'question_id_' + str(instance.answer.questionid), 'photo_'+str(instance.answer.questionid)+'.png'
+        name, 'question_id_' + str(instance.answer_image.questionid), 'photo_' + str(instance.answer_image.questionid) + '.png'
     )
-
 
 
 class Image(models.Model):
     image = models.ImageField(upload_to=user_directory_path)
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='images')
+    answer_image = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='images')
 
     def image_img(self):
         if self.image:
@@ -313,4 +311,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token
+
+    def get_full_name(self):
+        """
+        Этот метод требуется Django для таких вещей, как обработка электронной
+        почты. Обычно это имя фамилия пользователя, но поскольку мы не
+        используем их, будем возвращать username.
+        """
+        return self.username
+
 

@@ -4,29 +4,44 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.utils import json
-
-from rest_framework.utils.serializer_helpers import ReturnList
 from rest_framework.views import APIView
 
 from .forms import LoginForm
-from .inspection import GetDataBase
-from .serializers import LoginSerializer
+from .inspection import GetDataBase, BriefcaseBD
+from .serializers import LoginSerializer, BriefCaseDataBaseSerializer
 
 
-def start(request):
-    return render(request, 'main/start.html')
+class BriefCase(APIView):
+    """
+    Класс для просмотра сохраненных брифкейсов, вместе с ответами и фотографиями (GET),
+    и POST запрос для создания брифкейсов вместе с ответами и фотографиями если они есть
+    """
+
+    def get(self, request):
+        result = BriefcaseBD().get_briefcase()
+        return Response(result.data)
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        result = BriefCaseDataBaseSerializer(data=data, many=True)
+        if result.is_valid(raise_exception=True):
+            result.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-def index(request):
-    return render(request, 'main/index.html')
+class Question(APIView):
+    """
+    получение вопросов выбранной категории, требуется qid
+    """
+    def get(self, request):
+        result = GetDataBase().get_question_chapters(data=request.GET.get("qid"))
+        if not result.data:
+            return Response({'status': 'no data'})
+        return Response(result.data.values())
 
 
-def index_web(request):
-    return render(request, 'main/index_web.html')
-
-
-class AnswerMVP (APIView):
+class AnswerMVP(APIView):
 
     def get(self, request):
         result = GetDataBase().get_answers()
@@ -45,13 +60,13 @@ class Chapters(APIView):
         return Response(result.data, status=status.HTTP_200_OK)
 
 
-class Vessel(APIView):
-    """Список категорий"""
+class InfoBriefCase(APIView):
+    """Список информации для создания брифкейса (порт. название корабля, тип инспеции, источник инспекции"""
 
     def get(self, request):
         result = GetDataBase().get_info_briefcase()
         if not result:
-            return Response({'status': 'no data!'}, status=status.HTTP_200_OK)
+            return Response({'status': 'no data!'})
         return Response(result.data, status=status.HTTP_200_OK)
 
 
@@ -62,13 +77,14 @@ class LoginAPIView(APIView):
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
 
-    def post(self, request):
+    def get(self, request):
         """
         Checks is user exists.
         Email and password are required.
         Returns a JSON web token.
         """
-        serializer = self.serializer_class(data=request.data)
+
+        serializer = self.serializer_class(data=request.GET)
         serializer.is_valid(raise_exception=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -96,6 +112,7 @@ def login_site(request):
     return render(request, 'main/start.html')
 
 
+
 def logout_user(request):
     logout(request)
     return redirect('start')
@@ -103,3 +120,15 @@ def logout_user(request):
 
 def page_not_found(request, exception):
     return render(request, 'main/404.html')
+
+
+def start(request):
+    return render(request, 'main/start.html')
+
+
+def index(request):
+    return render(request, 'main/index.html')
+
+
+def index_web(request):
+    return render(request, 'main/index_web.html')

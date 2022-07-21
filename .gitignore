@@ -34,7 +34,8 @@ ipython_config.py
 venv/
 # Media and Static directories
 
-/staticfiles/
+/staticfiles/media/
+/staticfiles/*
 !/static/.gitkeep
 # Secrets
 secrets.json
